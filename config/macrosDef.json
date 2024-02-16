@@ -1,0 +1,162 @@
+{
+    "Macros": [
+        {
+            "name": "Cargar Camion",
+            "keys": [53],
+            "timeWaitCmds": 1000,
+            "cmds": ["/cargar camion"],
+            "inCar": true
+        },
+        {
+            "name": "No",
+            "keys": [53],
+            "timeWaitCmds": 1000,
+            "cmds": ["/consumir remedio","/no"],
+            "inCar": false
+        },
+        {
+            "name": "Cerrar",
+            "keys": [164, 49],
+            "timeWaitCmds": 1000,
+            "cmds": ["/cerrar"],
+            "inCar": null
+        },
+        {
+            "name": "Abrir",
+            "keys": [49],
+            "timeWaitCmds": 1000,
+            "cmds": ["/abrir"],
+            "inCar": null
+        },
+        {
+            "name": "Baul",
+            "keys": [66],
+            "timeWaitCmds": 1100,
+            "cmds": ["/abrir baul", "/baul"],
+            "inCar": null
+        },
+        {
+            "name": "Inventario",
+            "keys": [73],
+            "timeWaitCmds": 1000,
+            "cmds": ["/inventario"],
+            "inCar": null
+        },
+        {
+            "name": "Patinar",
+            "keys": [80],
+            "timeWaitCmds": 1000,
+            "cmds": ["/patinar2"],
+            "inCar": false
+        },{
+            "name": "Luces",
+            "keys": [76],
+            "timeWaitCmds": 1000,
+            "cmds": ["/luces"],
+            "inCar": true
+        }
+        
+    ],
+    "keyIgnoreCombinations": [
+        {"name": "AltR", "value": 160},
+        {"name": "AltL", "value": 161},
+        {"name": "Ctrl", "value": 162},
+        {"name": "Ctrl", "value": 163},
+        {"name": "Shift", "value": 164},
+        {"name": "Shift", "value": 165}
+    ],
+    "Accions": [
+        {
+            "name": "Arrancar",
+            "text": "Para encender el motor del vehículo, utiliza {DBED15}/arrancar{FFFFFF} o pulsa {DBED15}'2'{FFFFFF}.",
+            "textDesactive": null,
+            "cmds": ["/arrancar"],
+            "autoActivate": true,
+            "keyActive": null,
+            "keyName": null,
+            "timeWaitCmds": 1000,
+            "timeWaitActive": 0
+        },
+        {
+            "name": "Tirar Barril",
+            "text": "crygeozambrano levant un tanque de qumicos",
+            "textDesactive": null,
+            "cmds": ["/tirar objeto"],
+            "autoActivate": false,
+            "keyActive": 75,
+            "keyName": "K",
+            "timeWaitCmds": 1000,
+            "timeWaitActive": 3000
+        },
+        {
+            "name": "Tirar Barril",
+            "text": "crygeozambrano sac un tanque de qumicos de la camioneta",
+            "textDesactive": null,
+            "cmds": ["/tirar objeto"],
+            "autoActivate": false,
+            "keyActive": 75,
+            "keyName": "K",
+            "timeWaitCmds": 1000,
+            "timeWaitActive": 3000
+        },
+        {
+            "name": "Ya pedido",
+            "text": "tu banda ya tiene un pedido de qumicos en camino",
+            "textDesactive": null,
+            "cmds": ["!He intentado tomar un pedido de quimicos, pero me sale que ya tienen."],
+            "autoActivate": true,
+            "keyActive": null,
+            "keyName": null,
+            "timeWaitCmds": 1000,
+            "timeWaitActive": 0
+        },
+        {
+            "name": "Ya pedido",
+            "text": "ve con el vehculo de la fbrica hasta el punto marcado en el mapa",
+            "textDesactive": null,
+            "cmds": ["!He solicitado un pedido de quimicos."],
+            "autoActivate": true,
+            "keyActive": null,
+            "keyName": null,
+            "timeWaitCmds": 1000,
+            "timeWaitActive": 0
+        },
+        {
+            "name": "Llegada a quimicos",
+            "text": "carga los tanques en la camioneta y regrsalos a la fbrica",
+            "textDesactive": null,
+            "cmds": ["!He llegado a la zona de carga, procedo con la embarcacion."],
+            "autoActivate": true,
+            "keyActive": null,
+            "keyName": null,
+            "timeWaitCmds": 1000,
+            "timeWaitActive": 0
+        },
+        {
+            "name": "Llegada a Fabrica",
+            "text": "productos qumicos transportados con xito recibes 3174 por haber participado",
+            "textDesactive": null,
+            "cmds": ["!He llegado a la fabrica, procedo con la desembarcacion."],
+            "autoActivate": true,
+            "keyActive": null,
+            "keyName": null,
+            "timeWaitCmds": 1000,
+            "timeWaitActive": 0
+        }
+    ],
+    
+    "SubComandos": [
+        {
+            "name": "servicio medico",
+            "cmdInvoque": "sm",
+            "cmds": ["/servicio medico"],
+            "timeWaitCmds": 1000
+        }
+    ],
+    "Settings": {
+        "macrosOn": true,
+        "acctionOn": true,
+        "subComandosOn": true
+    }
+    
+}

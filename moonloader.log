@@ -1,0 +1,58 @@
+[21:57:14.640644] (system)	Session started.
+[21:57:14.641644] (debug)	Module handle: 59BA0000
+
+MoonLoader v.026.5-beta loaded.
+Developers: FYP, hnnssy, EvgeN 1137
+
+Copyright (c) 2016, BlastHack Team
+http://blast.hk/moonloader/
+
+[21:57:14.641644] (info)	Working directory: E:\Programas\GTA San Andreas SampFuncs V2\moonloader
+[21:57:14.641644] (debug)	FP Control: 0009001F
+[21:57:14.641644] (debug)	Game: GTA SA 1.0.0.0 US
+[21:57:14.641644] (system)	Installing pre-game hooks...
+[21:57:14.643645] (system)	Hooks installed.
+[21:57:23.287607] (debug)	Initializing opcode handler table
+[21:57:23.287607] (debug)	package.path = E:\Programas\GTA San Andreas SampFuncs V2\moonloader\lib\?.lua;E:\Programas\GTA San Andreas SampFuncs V2\moonloader\lib\?\init.lua;E:\Programas\GTA San Andreas SampFuncs V2\moonloader\?.lua;E:\Programas\GTA San Andreas SampFuncs V2\moonloader\?\init.lua;.\?.lua;E:\Programas\GTA San Andreas SampFuncs V2\moonloader\lib\?.luac;E:\Programas\GTA San Andreas SampFuncs V2\moonloader\lib\?\init.luac;E:\Programas\GTA San Andreas SampFuncs V2\moonloader\?.luac;E:\Programas\GTA San Andreas SampFuncs V2\moonloader\?\init.luac;.\?.luac
+[21:57:23.287607] (debug)	package.cpath = E:\Programas\GTA San Andreas SampFuncs V2\moonloader\lib\?.dll;
+[21:57:23.291608] (system)	Loading script 'E:\Programas\GTA San Andreas SampFuncs V2\moonloader\AutoReboot.lua'...
+[21:57:23.291608] (debug)	New script: 0537EE54
+[21:57:23.292608] (system)	ML-AutoReboot: Loaded successfully.
+[21:57:23.292608] (system)	Loading script 'E:\Programas\GTA San Andreas SampFuncs V2\moonloader\Chat MImGui 7.0.lua'...
+[21:57:23.292608] (debug)	New script: 0A35D574
+[21:57:23.305613] (system)	Chat MImGui: Loaded successfully.
+[21:57:23.305613] (system)	Loading script 'E:\Programas\GTA San Andreas SampFuncs V2\moonloader\Hora_y_Fecha.luac'...
+[21:57:23.305613] (debug)	New script: 0A526664
+[21:57:23.326616] (system)	Hora_y_Fecha.luac: Loaded successfully.
+[21:57:23.326616] (system)	Loading script 'E:\Programas\GTA San Andreas SampFuncs V2\moonloader\Hud_Editor_by_Jose.luac'...
+[21:57:23.326616] (debug)	New script: 01AC7CEC
+[21:57:23.421637] (system)	Hud_Editor_by_Jose.luac: Loaded successfully.
+[21:57:23.421637] (system)	Loading script 'E:\Programas\GTA San Andreas SampFuncs V2\moonloader\keyboard.lua'...
+[21:57:23.421637] (debug)	New script: 0A549604
+[21:57:23.425638] (system)	KeyBoard: Loaded successfully.
+[21:57:23.425638] (system)	Loading script 'E:\Programas\GTA San Andreas SampFuncs V2\moonloader\macro.lua'...
+[21:57:23.425638] (debug)	New script: 0A54D79C
+[21:57:23.434640] (system)	MacroDef: Loaded successfully.
+[21:57:23.434640] (system)	Loading script 'E:\Programas\GTA San Andreas SampFuncs V2\moonloader\macros.lua'...
+[21:57:23.434640] (debug)	New script: 0A560F2C
+[21:57:23.472649] (system)	macros.lua: Loaded successfully.
+[21:57:23.472649] (system)	Loading script 'E:\Programas\GTA San Andreas SampFuncs V2\moonloader\reload_all.lua'...
+[21:57:23.472649] (debug)	New script: 0A5615D4
+[21:57:23.473651] (system)	ML-ReloadAll: Loaded successfully.
+[21:57:23.473651] (system)	Loading script 'E:\Programas\GTA San Andreas SampFuncs V2\moonloader\SF Integration.lua'...
+[21:57:23.473651] (debug)	New script: 0A56175C
+[21:57:23.475649] (system)	SF Integration: Loaded successfully.
+[21:57:38.945256] (system)	Installing post-load hooks...
+[21:57:38.945256] (system)	Hooks installed.
+[21:57:39.821456] (script)	Chat MImGui: [WARNING] rewrote another hook
+[22:25:08.818437] (system)	Unloading...
+[22:25:08.818437] (system)	ML-AutoReboot: Script terminated. (0537EE54)
+[22:25:08.819438] (system)	Chat MImGui: Script terminated. (0A35D574)
+[22:25:08.834441] (system)	Hora_y_Fecha.luac: Script terminated. (0A526664)
+[22:25:08.835442] (system)	Hud_Editor_by_Jose.luac: Script terminated. (01AC7CEC)
+[22:25:08.836442] (system)	KeyBoard: Script terminated. (0A549604)
+[22:25:08.836442] (system)	MacroDef: Script terminated. (0A54D79C)
+[22:25:08.837442] (system)	macros.lua: Script terminated. (0A560F2C)
+[22:25:08.838442] (system)	ML-ReloadAll: Script terminated. (0A5615D4)
+[22:25:08.838442] (system)	SF Integration: Script terminated. (0A56175C)
+[22:25:08.853445] (system)	Session terminated.

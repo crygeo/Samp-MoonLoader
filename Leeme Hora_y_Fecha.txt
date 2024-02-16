@@ -1,0 +1,9 @@
+instalación: copiar todo el contenido del archivo .rar a la carpeta MoonLoader
+
+uso: /ihora  : configurable en moonloader/config/hora_fecha.ini
+
+requisitos: samp 0.3.7 r1, mooonloader 0.2.6 con sus lib & sampfuncs 5.4.1
+
+
+Youtube: www.youtube.com/JoseSampMods/videos
+Discord: https://discord.com/invite/nCUrj2W

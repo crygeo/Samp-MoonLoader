@@ -1,0 +1,11 @@
+* El comando se puede cambiar en el archivo: moonloader/config/macros_v2.ini
+* Puedes hacer copias de seguridad de los macros guardando el archivo->  moonloader/config/lista_macros_3teclas.txt
+
+instalación: copiar todo el contenido del archivo .rar a la carpeta MoonLoader
+
+uso: /macros
+
+requisitos: samp 0.3.7 r1, mooonloader 0.2.6 con sus lib & sampfuncs 5.4.1 y librerias microsoft visual c++ instaladas
+
+Youtube: www.youtube.com/JoseSampMods/videos
+Discord: https://discord.com/invite/nCUrj2W
