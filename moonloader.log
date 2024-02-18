@@ -1,5 +1,5 @@
-[21:57:14.640644] (system)	Session started.
-[21:57:14.641644] (debug)	Module handle: 59BA0000
+[09:24:41.266994] (system)	Session started.
+[09:24:41.266994] (debug)	Module handle: 54270000
 
 MoonLoader v.026.5-beta loaded.
 Developers: FYP, hnnssy, EvgeN 1137
@@ -7,52 +7,236 @@ Developers: FYP, hnnssy, EvgeN 1137
 Copyright (c) 2016, BlastHack Team
 http://blast.hk/moonloader/
 
-[21:57:14.641644] (info)	Working directory: E:\Programas\GTA San Andreas SampFuncs V2\moonloader
-[21:57:14.641644] (debug)	FP Control: 0009001F
-[21:57:14.641644] (debug)	Game: GTA SA 1.0.0.0 US
-[21:57:14.641644] (system)	Installing pre-game hooks...
-[21:57:14.643645] (system)	Hooks installed.
-[21:57:23.287607] (debug)	Initializing opcode handler table
-[21:57:23.287607] (debug)	package.path = E:\Programas\GTA San Andreas SampFuncs V2\moonloader\lib\?.lua;E:\Programas\GTA San Andreas SampFuncs V2\moonloader\lib\?\init.lua;E:\Programas\GTA San Andreas SampFuncs V2\moonloader\?.lua;E:\Programas\GTA San Andreas SampFuncs V2\moonloader\?\init.lua;.\?.lua;E:\Programas\GTA San Andreas SampFuncs V2\moonloader\lib\?.luac;E:\Programas\GTA San Andreas SampFuncs V2\moonloader\lib\?\init.luac;E:\Programas\GTA San Andreas SampFuncs V2\moonloader\?.luac;E:\Programas\GTA San Andreas SampFuncs V2\moonloader\?\init.luac;.\?.luac
-[21:57:23.287607] (debug)	package.cpath = E:\Programas\GTA San Andreas SampFuncs V2\moonloader\lib\?.dll;
-[21:57:23.291608] (system)	Loading script 'E:\Programas\GTA San Andreas SampFuncs V2\moonloader\AutoReboot.lua'...
-[21:57:23.291608] (debug)	New script: 0537EE54
-[21:57:23.292608] (system)	ML-AutoReboot: Loaded successfully.
-[21:57:23.292608] (system)	Loading script 'E:\Programas\GTA San Andreas SampFuncs V2\moonloader\Chat MImGui 7.0.lua'...
-[21:57:23.292608] (debug)	New script: 0A35D574
-[21:57:23.305613] (system)	Chat MImGui: Loaded successfully.
-[21:57:23.305613] (system)	Loading script 'E:\Programas\GTA San Andreas SampFuncs V2\moonloader\Hora_y_Fecha.luac'...
-[21:57:23.305613] (debug)	New script: 0A526664
-[21:57:23.326616] (system)	Hora_y_Fecha.luac: Loaded successfully.
-[21:57:23.326616] (system)	Loading script 'E:\Programas\GTA San Andreas SampFuncs V2\moonloader\Hud_Editor_by_Jose.luac'...
-[21:57:23.326616] (debug)	New script: 01AC7CEC
-[21:57:23.421637] (system)	Hud_Editor_by_Jose.luac: Loaded successfully.
-[21:57:23.421637] (system)	Loading script 'E:\Programas\GTA San Andreas SampFuncs V2\moonloader\keyboard.lua'...
-[21:57:23.421637] (debug)	New script: 0A549604
-[21:57:23.425638] (system)	KeyBoard: Loaded successfully.
-[21:57:23.425638] (system)	Loading script 'E:\Programas\GTA San Andreas SampFuncs V2\moonloader\macro.lua'...
-[21:57:23.425638] (debug)	New script: 0A54D79C
-[21:57:23.434640] (system)	MacroDef: Loaded successfully.
-[21:57:23.434640] (system)	Loading script 'E:\Programas\GTA San Andreas SampFuncs V2\moonloader\macros.lua'...
-[21:57:23.434640] (debug)	New script: 0A560F2C
-[21:57:23.472649] (system)	macros.lua: Loaded successfully.
-[21:57:23.472649] (system)	Loading script 'E:\Programas\GTA San Andreas SampFuncs V2\moonloader\reload_all.lua'...
-[21:57:23.472649] (debug)	New script: 0A5615D4
-[21:57:23.473651] (system)	ML-ReloadAll: Loaded successfully.
-[21:57:23.473651] (system)	Loading script 'E:\Programas\GTA San Andreas SampFuncs V2\moonloader\SF Integration.lua'...
-[21:57:23.473651] (debug)	New script: 0A56175C
-[21:57:23.475649] (system)	SF Integration: Loaded successfully.
-[21:57:38.945256] (system)	Installing post-load hooks...
-[21:57:38.945256] (system)	Hooks installed.
-[21:57:39.821456] (script)	Chat MImGui: [WARNING] rewrote another hook
-[22:25:08.818437] (system)	Unloading...
-[22:25:08.818437] (system)	ML-AutoReboot: Script terminated. (0537EE54)
-[22:25:08.819438] (system)	Chat MImGui: Script terminated. (0A35D574)
-[22:25:08.834441] (system)	Hora_y_Fecha.luac: Script terminated. (0A526664)
-[22:25:08.835442] (system)	Hud_Editor_by_Jose.luac: Script terminated. (01AC7CEC)
-[22:25:08.836442] (system)	KeyBoard: Script terminated. (0A549604)
-[22:25:08.836442] (system)	MacroDef: Script terminated. (0A54D79C)
-[22:25:08.837442] (system)	macros.lua: Script terminated. (0A560F2C)
-[22:25:08.838442] (system)	ML-ReloadAll: Script terminated. (0A5615D4)
-[22:25:08.838442] (system)	SF Integration: Script terminated. (0A56175C)
-[22:25:08.853445] (system)	Session terminated.
+[09:24:41.266994] (info)	Working directory: E:\Programas\GTA San Andreas SampFuncs V2\moonloader
+[09:24:41.266994] (debug)	FP Control: 0009001F
+[09:24:41.266994] (debug)	Game: GTA SA 1.0.0.0 US
+[09:24:41.266994] (system)	Installing pre-game hooks...
+[09:24:41.268995] (system)	Hooks installed.
+[09:24:42.643281] (debug)	Initializing opcode handler table
+[09:24:42.643281] (debug)	package.path = E:\Programas\GTA San Andreas SampFuncs V2\moonloader\lib\?.lua;E:\Programas\GTA San Andreas SampFuncs V2\moonloader\lib\?\init.lua;E:\Programas\GTA San Andreas SampFuncs V2\moonloader\?.lua;E:\Programas\GTA San Andreas SampFuncs V2\moonloader\?\init.lua;.\?.lua;E:\Programas\GTA San Andreas SampFuncs V2\moonloader\lib\?.luac;E:\Programas\GTA San Andreas SampFuncs V2\moonloader\lib\?\init.luac;E:\Programas\GTA San Andreas SampFuncs V2\moonloader\?.luac;E:\Programas\GTA San Andreas SampFuncs V2\moonloader\?\init.luac;.\?.luac
+[09:24:42.643281] (debug)	package.cpath = E:\Programas\GTA San Andreas SampFuncs V2\moonloader\lib\?.dll;
+[09:24:42.645282] (system)	Loading script 'E:\Programas\GTA San Andreas SampFuncs V2\moonloader\AutoReboot.lua'...
+[09:24:42.645282] (debug)	New script: 09CA45AC
+[09:24:42.647281] (system)	ML-AutoReboot: Loaded successfully.
+[09:24:42.647281] (system)	Loading script 'E:\Programas\GTA San Andreas SampFuncs V2\moonloader\Chat MImGui 7.0.lua'...
+[09:24:42.647281] (debug)	New script: 09CA4424
+[09:24:42.657284] (system)	Chat MImGui: Loaded successfully.
+[09:24:42.657284] (system)	Loading script 'E:\Programas\GTA San Andreas SampFuncs V2\moonloader\Hora_y_Fecha.luac'...
+[09:24:42.657284] (debug)	New script: 09CA4734
+[09:24:42.677290] (system)	Hora_y_Fecha.luac: Loaded successfully.
+[09:24:42.677290] (system)	Loading script 'E:\Programas\GTA San Andreas SampFuncs V2\moonloader\Hud_Editor_by_Jose.luac'...
+[09:24:42.677290] (debug)	New script: 09CA4A44
+[09:24:42.766309] (system)	Hud_Editor_by_Jose.luac: Loaded successfully.
+[09:24:42.766309] (system)	Loading script 'E:\Programas\GTA San Andreas SampFuncs V2\moonloader\keyboard.lua'...
+[09:24:42.766309] (debug)	New script: 09CA3F8C
+[09:24:42.771309] (system)	KeyBoard: Loaded successfully.
+[09:24:42.771309] (system)	Loading script 'E:\Programas\GTA San Andreas SampFuncs V2\moonloader\macro.lua'...
+[09:24:42.771309] (debug)	New script: 09CA4BCC
+[09:24:42.789313] (system)	MacroDef: Loaded successfully.
+[09:24:42.789313] (system)	Loading script 'E:\Programas\GTA San Andreas SampFuncs V2\moonloader\macros.lua'...
+[09:24:42.789313] (debug)	New script: 09CA4D54
+[09:24:42.817320] (system)	macros.lua: Loaded successfully.
+[09:24:42.817320] (system)	Loading script 'E:\Programas\GTA San Andreas SampFuncs V2\moonloader\reload_all.lua'...
+[09:24:42.817320] (debug)	New script: 0A2A1BC4
+[09:24:42.818320] (system)	ML-ReloadAll: Loaded successfully.
+[09:24:42.818320] (system)	Loading script 'E:\Programas\GTA San Andreas SampFuncs V2\moonloader\SF Integration.lua'...
+[09:24:42.818320] (debug)	New script: 0A29FEAC
+[09:24:42.819321] (system)	SF Integration: Loaded successfully.
+[09:24:53.367915] (system)	Installing post-load hooks...
+[09:24:53.367915] (system)	Hooks installed.
+[09:24:54.227116] (script)	Chat MImGui: [WARNING] rewrote another hook
+[09:25:42.243662] (script)	ML-AutoReboot: Reloading "MacroDef"...
+[09:25:42.292675] (system)	MacroDef: Script terminated. (09CA4BCC)
+[09:25:42.293673] (system)	Loading script 'E:\Programas\GTA San Andreas SampFuncs V2\moonloader\macro.lua'...
+[09:25:42.293673] (debug)	New script: 25245EAC
+[09:25:42.302675] (system)	MacroDef: Loaded successfully.
+[09:25:42.303675] (script)	MacroDef: true
+[09:28:24.949138] (script)	ML-AutoReboot: Reloading "KeyBoard"...
+[09:28:24.954139] (script)	ML-AutoReboot: Reloading "MacroDef"...
+[09:28:24.963141] (system)	MacroDef: Script terminated. (25245EAC)
+[09:28:24.964141] (system)	Loading script 'E:\Programas\GTA San Andreas SampFuncs V2\moonloader\macro.lua'...
+[09:28:24.964141] (debug)	New script: 0A2A0654
+[09:28:24.974143] (error)	MacroDef: ...gramas\GTA San Andreas SampFuncs V2\moonloader\macro.lua:25: attempt to index local 'new' (a nil value)
+stack traceback:
+	...gramas\GTA San Andreas SampFuncs V2\moonloader\macro.lua:25: in main chunk
+[09:28:24.974143] (error)	MacroDef: Script died due to an error. (0A2A0654)
+[09:28:24.975144] (system)	KeyBoard: Script terminated. (09CA3F8C)
+[09:28:24.976143] (system)	Loading script 'E:\Programas\GTA San Andreas SampFuncs V2\moonloader\keyboard.lua'...
+[09:28:24.976143] (debug)	New script: 0A2A04CC
+[09:28:24.982145] (system)	KeyBoard: Loaded successfully.
+[09:29:40.252541] (script)	ML-AutoReboot: Loading "E:\Programas\GTA San Andreas SampFuncs V2\moonloader\macro.lua"...
+[09:29:40.252541] (system)	Loading script 'E:\Programas\GTA San Andreas SampFuncs V2\moonloader\macro.lua'...
+[09:29:40.252541] (debug)	New script: 0A2A0344
+[09:29:40.264543] (system)	MacroDef: Loaded successfully.
+[09:29:47.125636] (error)	MacroDef: ...gramas\GTA San Andreas SampFuncs V2\moonloader\macro.lua:172: attempt to call field 'RadioButton' (a nil value)
+stack traceback:
+	...gramas\GTA San Andreas SampFuncs V2\moonloader\macro.lua:172: in function '_draw'
+	... San Andreas SampFuncs V2\moonloader\lib\mimgui\init.lua:107: in function <... San Andreas SampFuncs V2\moonloader\lib\mimgui\init.lua:91>
+[09:29:47.127637] (error)	MacroDef: Script died due to an error. (0A2A0344)
+[09:36:15.445451] (system)	ML-AutoReboot: Script terminated. (09CA45AC)
+[09:36:15.445451] (system)	Chat MImGui: Script terminated. (09CA4424)
+[09:36:15.448452] (system)	Hora_y_Fecha.luac: Script terminated. (09CA4734)
+[09:36:15.448452] (system)	Hud_Editor_by_Jose.luac: Script terminated. (09CA4A44)
+[09:36:15.449452] (system)	macros.lua: Script terminated. (09CA4D54)
+[09:36:15.450453] (system)	ML-ReloadAll: Script terminated. (0A2A1BC4)
+[09:36:15.450453] (system)	SF Integration: Script terminated. (0A29FEAC)
+[09:36:15.451452] (system)	KeyBoard: Script terminated. (0A2A04CC)
+[09:36:15.451452] (system)	Loading script 'E:\Programas\GTA San Andreas SampFuncs V2\moonloader\Assistant3000.lua'...
+[09:36:15.451452] (debug)	New script: 0A011B9C
+[09:36:15.459455] (system)	KeyBoard: Loaded successfully.
+[09:36:15.459455] (system)	Loading script 'E:\Programas\GTA San Andreas SampFuncs V2\moonloader\AutoReboot.lua'...
+[09:36:15.459455] (debug)	New script: 0A010F5C
+[09:36:15.460456] (system)	ML-AutoReboot: Loaded successfully.
+[09:36:15.460456] (system)	Loading script 'E:\Programas\GTA San Andreas SampFuncs V2\moonloader\Chat MImGui 7.0.lua'...
+[09:36:15.460456] (debug)	New script: 0A01126C
+[09:36:15.466457] (system)	Chat MImGui: Loaded successfully.
+[09:36:15.466457] (system)	Loading script 'E:\Programas\GTA San Andreas SampFuncs V2\moonloader\Hora_y_Fecha.luac'...
+[09:36:15.466457] (debug)	New script: 0A01157C
+[09:36:15.480463] (system)	Hora_y_Fecha.luac: Loaded successfully.
+[09:36:15.480463] (system)	Loading script 'E:\Programas\GTA San Andreas SampFuncs V2\moonloader\Hud_Editor_by_Jose.luac'...
+[09:36:15.480463] (debug)	New script: 0A011EAC
+[09:36:15.547478] (system)	Hud_Editor_by_Jose.luac: Loaded successfully.
+[09:36:15.547478] (system)	Loading script 'E:\Programas\GTA San Andreas SampFuncs V2\moonloader\keyboard.lua'...
+[09:36:15.547478] (debug)	New script: 0A01188C
+[09:36:15.552478] (system)	KeyBoard: Loaded successfully.
+[09:36:15.552478] (system)	Loading script 'E:\Programas\GTA San Andreas SampFuncs V2\moonloader\macro.lua'...
+[09:36:15.552478] (debug)	New script: 0A011A14
+[09:36:15.562481] (system)	MacroDef: Loaded successfully.
+[09:36:15.562481] (system)	Loading script 'E:\Programas\GTA San Andreas SampFuncs V2\moonloader\macros.lua'...
+[09:36:15.562481] (debug)	New script: 0A010AC4
+[09:36:15.590489] (system)	macros.lua: Loaded successfully.
+[09:36:15.590489] (system)	Loading script 'E:\Programas\GTA San Andreas SampFuncs V2\moonloader\reload_all.lua'...
+[09:36:15.590489] (debug)	New script: 0A01062C
+[09:36:15.591489] (system)	ML-ReloadAll: Loaded successfully.
+[09:36:15.591489] (system)	Loading script 'E:\Programas\GTA San Andreas SampFuncs V2\moonloader\SF Integration.lua'...
+[09:36:15.591489] (debug)	New script: 0A01031C
+[09:36:15.592489] (system)	SF Integration: Loaded successfully.
+[09:36:15.594491] (script)	Chat MImGui: [WARNING] rewrote another hook
+[09:38:24.837597] (script)	ML-AutoReboot: Reloading "KeyBoard"...
+[09:38:24.852601] (system)	KeyBoard: Script terminated. (0A011B9C)
+[09:38:24.852601] (system)	Loading script 'E:\Programas\GTA San Andreas SampFuncs V2\moonloader\Assistant3000.lua'...
+[09:38:24.852601] (debug)	New script: 0A2A0AEC
+[09:38:24.856603] (system)	KeyBoard: Loaded successfully.
+[09:38:33.651891] (script)	ML-AutoReboot: Reloading "KeyBoard"...
+[09:38:33.692901] (system)	KeyBoard: Script terminated. (0A2A0AEC)
+[09:38:33.693900] (system)	Loading script 'E:\Programas\GTA San Andreas SampFuncs V2\moonloader\Assistant3000.lua'...
+[09:38:33.693900] (debug)	New script: 0A0110E4
+[09:38:33.696902] (system)	KeyBoard: Loaded successfully.
+[09:38:44.159229] (script)	ML-AutoReboot: Reloading "KeyBoard"...
+[09:38:44.178234] (system)	KeyBoard: Script terminated. (0A0110E4)
+[09:38:44.178234] (system)	Loading script 'E:\Programas\GTA San Andreas SampFuncs V2\moonloader\Assistant3000.lua'...
+[09:38:44.178234] (debug)	New script: 0A2A1294
+[09:38:44.181234] (system)	KeyBoard: Loaded successfully.
+[09:41:41.044687] (script)	ML-AutoReboot: Reloading "MacroDef"...
+[09:41:41.045687] (script)	ML-AutoReboot: Reloading "KeyBoard"...
+[09:41:41.058689] (system)	KeyBoard: Script terminated. (0A2A1294)
+[09:41:41.058689] (system)	Loading script 'E:\Programas\GTA San Andreas SampFuncs V2\moonloader\Assistant3000.lua'...
+[09:41:41.058689] (debug)	New script: 0A010194
+[09:41:41.062690] (system)	KeyBoard: Loaded successfully.
+[09:41:41.062690] (system)	MacroDef: Script terminated. (0A011A14)
+[09:41:41.063690] (system)	Loading script 'E:\Programas\GTA San Andreas SampFuncs V2\moonloader\macro.lua'...
+[09:41:41.063690] (debug)	New script: 0A010DD4
+[09:41:41.071694] (system)	MacroDef: Loaded successfully.
+[09:41:51.491314] (error)	MacroDef: ...gramas\GTA San Andreas SampFuncs V2\moonloader\macro.lua:172: attempt to call field 'RadioButton' (a nil value)
+stack traceback:
+	...gramas\GTA San Andreas SampFuncs V2\moonloader\macro.lua:172: in function '_draw'
+	... San Andreas SampFuncs V2\moonloader\lib\mimgui\init.lua:107: in function <... San Andreas SampFuncs V2\moonloader\lib\mimgui\init.lua:91>
+[09:41:51.492314] (error)	MacroDef: Script died due to an error. (0A010DD4)
+[09:53:34.155001] (script)	ML-AutoReboot: Reloading "KeyBoard"...
+[09:53:34.168004] (system)	KeyBoard: Script terminated. (0A010194)
+[09:53:34.168004] (system)	Loading script 'E:\Programas\GTA San Andreas SampFuncs V2\moonloader\Assistant3000.lua'...
+[09:53:34.168004] (debug)	New script: 0A2A0F84
+[09:53:34.177006] (system)	KeyBoard: Loaded successfully.
+[09:53:34.178005] (error)	KeyBoard: ...TA San Andreas SampFuncs V2\moonloader\Assistant3000.lua:18: attempt to call global 'getInfor' (a nil value)
+stack traceback:
+	...TA San Andreas SampFuncs V2\moonloader\Assistant3000.lua: in function <...TA San Andreas SampFuncs V2\moonloader\Assistant3000.lua:15>
+[09:53:34.178005] (error)	KeyBoard: Script died due to an error. (0A2A0F84)
+[09:53:48.101426] (script)	ML-AutoReboot: Loading "E:\Programas\GTA San Andreas SampFuncs V2\moonloader\Assistant3000.lua"...
+[09:53:48.102426] (system)	Loading script 'E:\Programas\GTA San Andreas SampFuncs V2\moonloader\Assistant3000.lua'...
+[09:53:48.102426] (debug)	New script: 0A2A110C
+[09:53:48.107427] (system)	KeyBoard: Loaded successfully.
+[09:53:48.381489] (error)	KeyBoard: ...TA San Andreas SampFuncs V2\moonloader\Assistant3000.lua:18: attempt to call global 'GetInfor' (a nil value)
+stack traceback:
+	...TA San Andreas SampFuncs V2\moonloader\Assistant3000.lua: in function <...TA San Andreas SampFuncs V2\moonloader\Assistant3000.lua:15>
+[09:53:48.381489] (error)	KeyBoard: Script died due to an error. (0A2A110C)
+[09:54:03.707368] (script)	ML-AutoReboot: Loading "E:\Programas\GTA San Andreas SampFuncs V2\moonloader\Assistant3000.lua"...
+[09:54:03.707368] (system)	Loading script 'E:\Programas\GTA San Andreas SampFuncs V2\moonloader\Assistant3000.lua'...
+[09:54:03.707368] (debug)	New script: 0A0113F4
+[09:54:03.711368] (system)	KeyBoard: Loaded successfully.
+[09:54:03.987430] (error)	KeyBoard: ...TA San Andreas SampFuncs V2\moonloader\Assistant3000.lua:18: attempt to call global 'GetDataArchivo' (a nil value)
+stack traceback:
+	...TA San Andreas SampFuncs V2\moonloader\Assistant3000.lua: in function <...TA San Andreas SampFuncs V2\moonloader\Assistant3000.lua:15>
+[09:54:03.987430] (error)	KeyBoard: Script died due to an error. (0A0113F4)
+[09:56:49.875627] (script)	ML-AutoReboot: Loading "E:\Programas\GTA San Andreas SampFuncs V2\moonloader\Assistant3000.lua"...
+[09:56:49.875627] (system)	Loading script 'E:\Programas\GTA San Andreas SampFuncs V2\moonloader\Assistant3000.lua'...
+[09:56:49.875627] (debug)	New script: 0A0107B4
+[09:56:49.879628] (system)	KeyBoard: Loaded successfully.
+[09:56:49.879628] (error)	KeyBoard: ...\GTA San Andreas SampFuncs V2\moonloader\lib\HelpMet.lua:6: attempt to call global 'GetUrlThis' (a nil value)
+stack traceback:
+	...\GTA San Andreas SampFuncs V2\moonloader\lib\HelpMet.lua: in function 'GetDataArchivo'
+	...TA San Andreas SampFuncs V2\moonloader\Assistant3000.lua:18: in function <...TA San Andreas SampFuncs V2\moonloader\Assistant3000.lua:15>
+[09:56:49.879628] (error)	KeyBoard: Script died due to an error. (0A0107B4)
+[09:58:06.658722] (script)	ML-AutoReboot: Loading "E:\Programas\GTA San Andreas SampFuncs V2\moonloader\macro.lua"...
+[09:58:06.658722] (system)	Loading script 'E:\Programas\GTA San Andreas SampFuncs V2\moonloader\macro.lua'...
+[09:58:06.658722] (debug)	New script: 0A2A0F84
+[09:58:06.666724] (system)	MacroDef: Loaded successfully.
+[09:59:11.655434] (script)	ML-AutoReboot: Loading "E:\Programas\GTA San Andreas SampFuncs V2\moonloader\Assistant3000.lua"...
+[09:59:11.655434] (system)	Loading script 'E:\Programas\GTA San Andreas SampFuncs V2\moonloader\Assistant3000.lua'...
+[09:59:11.655434] (debug)	New script: 0A011A14
+[09:59:11.663436] (system)	KeyBoard: Loaded successfully.
+[09:59:11.663436] (error)	KeyBoard: ...\GTA San Andreas SampFuncs V2\moonloader\lib\HelpMet.lua:25: attempt to concatenate local 'url' (a nil value)
+stack traceback:
+	...\GTA San Andreas SampFuncs V2\moonloader\lib\HelpMet.lua: in function 'GetUrlThis'
+	...\GTA San Andreas SampFuncs V2\moonloader\lib\HelpMet.lua:6: in function 'GetDataArchivo'
+	...TA San Andreas SampFuncs V2\moonloader\Assistant3000.lua:18: in function <...TA San Andreas SampFuncs V2\moonloader\Assistant3000.lua:15>
+[09:59:11.663436] (error)	KeyBoard: Script died due to an error. (0A011A14)
+[10:00:20.729842] (script)	ML-AutoReboot: Loading "E:\Programas\GTA San Andreas SampFuncs V2\moonloader\Assistant3000.lua"...
+[10:00:20.729842] (system)	Loading script 'E:\Programas\GTA San Andreas SampFuncs V2\moonloader\Assistant3000.lua'...
+[10:00:20.729842] (debug)	New script: 0A2A18B4
+[10:00:20.733843] (system)	KeyBoard: Loaded successfully.
+[10:00:20.777854] (error)	KeyBoard: ...TA San Andreas SampFuncs V2\moonloader\Assistant3000.lua:25: attempt to index global 'view' (a nil value)
+stack traceback:
+	...TA San Andreas SampFuncs V2\moonloader\Assistant3000.lua: in function <...TA San Andreas SampFuncs V2\moonloader\Assistant3000.lua:17>
+[10:00:20.777854] (error)	KeyBoard: Script died due to an error. (0A2A18B4)
+[10:01:06.186896] (script)	ML-AutoReboot: Loading "E:\Programas\GTA San Andreas SampFuncs V2\moonloader\Assistant3000.lua"...
+[10:01:06.186896] (system)	Loading script 'E:\Programas\GTA San Andreas SampFuncs V2\moonloader\Assistant3000.lua'...
+[10:01:06.186896] (debug)	New script: 0A2A0C74
+[10:01:06.190898] (system)	KeyBoard: Loaded successfully.
+[10:01:06.521972] (error)	KeyBoard: ...TA San Andreas SampFuncs V2\moonloader\Assistant3000.lua:25: attempt to index global 'view' (a nil value)
+stack traceback:
+	...TA San Andreas SampFuncs V2\moonloader\Assistant3000.lua: in function <...TA San Andreas SampFuncs V2\moonloader\Assistant3000.lua:17>
+[10:01:06.521972] (error)	KeyBoard: Script died due to an error. (0A2A0C74)
+[10:01:17.011746] (script)	ML-AutoReboot: Loading "E:\Programas\GTA San Andreas SampFuncs V2\moonloader\Assistant3000.lua"...
+[10:01:17.011746] (system)	Loading script 'E:\Programas\GTA San Andreas SampFuncs V2\moonloader\Assistant3000.lua'...
+[10:01:17.011746] (debug)	New script: 0A2A07DC
+[10:01:17.015746] (system)	KeyBoard: Loaded successfully.
+[10:01:17.040752] (error)	KeyBoard: ...TA San Andreas SampFuncs V2\moonloader\Assistant3000.lua:31: attempt to index global 'view' (a nil value)
+stack traceback:
+	...TA San Andreas SampFuncs V2\moonloader\Assistant3000.lua:31: in function 'OnDrawFrame'
+	...as\GTA San Andreas SampFuncs V2\moonloader\lib\imgui.lua:1378: in function <...as\GTA San Andreas SampFuncs V2\moonloader\lib\imgui.lua:1367>
+[10:01:17.040752] (error)	KeyBoard: Script died due to an error. (0A2A07DC)
+[10:01:36.435217] (script)	ML-AutoReboot: Loading "E:\Programas\GTA San Andreas SampFuncs V2\moonloader\Assistant3000.lua"...
+[10:01:36.435217] (system)	Loading script 'E:\Programas\GTA San Andreas SampFuncs V2\moonloader\Assistant3000.lua'...
+[10:01:36.435217] (debug)	New script: 0A011A14
+[10:01:36.440218] (system)	KeyBoard: Loaded successfully.
+[10:01:36.459159] (error)	KeyBoard: ...TA San Andreas SampFuncs V2\moonloader\Assistant3000.lua:36: attempt to index global 'settings' (a nil value)
+stack traceback:
+	...TA San Andreas SampFuncs V2\moonloader\Assistant3000.lua:36: in function 'OnDrawFrame'
+	...as\GTA San Andreas SampFuncs V2\moonloader\lib\imgui.lua:1378: in function <...as\GTA San Andreas SampFuncs V2\moonloader\lib\imgui.lua:1367>
+[10:01:36.460159] (error)	KeyBoard: Script died due to an error. (0A011A14)
+[10:03:13.793593] (script)	ML-AutoReboot: Loading "E:\Programas\GTA San Andreas SampFuncs V2\moonloader\Assistant3000.lua"...
+[10:03:13.793593] (system)	Loading script 'E:\Programas\GTA San Andreas SampFuncs V2\moonloader\Assistant3000.lua'...
+[10:03:13.793593] (debug)	New script: 0A2A172C
+[10:03:13.797593] (system)	KeyBoard: Loaded successfully.
+[10:03:17.135976] (system)	Unloading...
+[10:03:17.135976] (system)	ML-AutoReboot: Script terminated. (0A010F5C)
+[10:03:17.136978] (system)	Chat MImGui: Script terminated. (0A01126C)
+[10:03:17.145979] (system)	Hora_y_Fecha.luac: Script terminated. (0A01157C)
+[10:03:17.146979] (system)	Hud_Editor_by_Jose.luac: Script terminated. (0A011EAC)
+[10:03:17.147980] (system)	KeyBoard: Script terminated. (0A01188C)
+[10:03:17.148980] (system)	macros.lua: Script terminated. (0A010AC4)
+[10:03:17.149980] (system)	ML-ReloadAll: Script terminated. (0A01062C)
+[10:03:17.149980] (system)	SF Integration: Script terminated. (0A01031C)
+[10:03:17.149980] (system)	MacroDef: Script terminated. (0A2A0F84)
+[10:03:17.151980] (system)	KeyBoard: Script terminated. (0A2A172C)
+[10:03:17.170985] (system)	Session terminated.

@@ -44,7 +44,7 @@ function main()
 		imgui.Process = settings.v or keyboard.v or mouse.v
 		imgui.ShowCursor = settings.v
 		delta = getMousewheelDelta()
-		if delta ~= 0 then table.insert(wheel, {delta, os.clock()+0.05}) end -- ���� ����������� �������� ������
+		if delta ~= 0 then table.insert(wheel, {delta, os.clock()+0.05}) end 
 	end
 end
 
@@ -53,23 +53,23 @@ function imgui.OnDrawFrame()
 	if settings.v then
 		imgui.SetNextWindowSize(imgui.ImVec2(194, 120), imgui.Cond.FirstUseEver)
 		imgui.SetNextWindowPos(imgui.ImVec2(X / 2, Y / 2), imgui.Cond.FirstUseEver, imgui.ImVec2(0.5, 0.5))
-		imgui.Begin(u8'��������� ���������� � ����', settings, imgui.WindowFlags.NoResize + imgui.WindowFlags.AlwaysAutoResize)
-			imgui.PushItemWidth(140)
-			imgui.Combo(u8'��� ����������', keyboard_type, {u8'��� ����������', u8'��� NumPad', u8'������ �����', u8'���������� �����', u8'������ ����������'})
-			imgui.PopItemWidth()
-			imgui.Checkbox(u8'�������� ����������', keyboard)
-			imgui.Checkbox(u8'�������� ����', mouse)
-			imgui.Checkbox(u8'����������� ���������� � ����', move)
-			imgui.PushItemWidth(140)
-			if imgui.Combo(u8'����', theme, {u8'������', u8'�������', u8'���������', u8'����������', u8'��������', u8'Ƹ����'}) then styles[theme.v]() end
-			imgui.PopItemWidth()
-			imgui.SetCursorPosX((imgui.GetWindowWidth()-imgui.CalcTextSize('by CaJlaT').x)/2)
-			imgui.TextDisabled('by CaJlaT')
+		imgui.Begin("View keyboard presses", settings, imgui.WindowFlags.NoResize + imgui.WindowFlags.AlwaysAutoResize)
+		imgui.PushItemWidth(140)
+		imgui.Combo("Tipo de teclado.", keyboard_type, {"Completo", "Sin NumPad", "Numer", "NumPad" , "Gaming"})
+		imgui.PopItemWidth()
+		imgui.Checkbox("Mostrar Teclado", keyboard)
+		imgui.Checkbox("Mostrar Mouse", mouse)
+		imgui.Checkbox("Permitir mover", move)
+		imgui.PushItemWidth(140)
+		if imgui.Combo("Tema", theme, {"Verder", "Rojo", "Magenta", "Morado", "Vino", "Amarillo"}) then styles[theme.v]() end
+		imgui.PopItemWidth()
+		imgui.SetCursorPosX((imgui.GetWindowWidth()-imgui.CalcTextSize('by CaJlaT').x)/2)
+		imgui.TextDisabled('by CaJlaT')
 		imgui.End()
 	end
 	if keyboard.v then
-		imgui.PushStyleVar(imgui.StyleVar.WindowPadding, imgui.ImVec2(5.0, 2.4)) -- ���� ��������� ������
-		imgui.PushStyleColor(imgui.Col.WindowBg, imgui.ImVec4(0,0,0,0)) -- ������� ���
+		imgui.PushStyleVar(imgui.StyleVar.WindowPadding, imgui.ImVec2(5.0, 2.4))
+		imgui.PushStyleColor(imgui.Col.WindowBg, imgui.ImVec4(0,0,0,0))
 		imgui.SetNextWindowPos(keyboard_pos, imgui.Cond.FirstUseEver, imgui.ImVec2(0, 0))
 		imgui.Begin('##keyboard', _, imgui.WindowFlags.NoResize + imgui.WindowFlags.NoTitleBar + imgui.WindowFlags.AlwaysAutoResize + (move.v and 0 or imgui.WindowFlags.NoMove) )
 			keyboard_pos = imgui.GetWindowPos()
@@ -102,13 +102,13 @@ function imgui.OnDrawFrame()
 		imgui.PopStyleVar()
 	end
 	if mouse.v then
-		imgui.PushStyleVar(imgui.StyleVar.WindowPadding, imgui.ImVec2(5.0, 2.4)) -- ���� ��������� ������
-		imgui.PushStyleColor(imgui.Col.WindowBg, imgui.ImVec4(0,0,0,0)) -- ������� ���
+		imgui.PushStyleVar(imgui.StyleVar.WindowPadding, imgui.ImVec2(5.0, 2.4)) 
+		imgui.PushStyleColor(imgui.Col.WindowBg, imgui.ImVec4(0,0,0,0)) 
 		imgui.SetNextWindowPos(mouse_pos, imgui.Cond.FirstUseEver, imgui.ImVec2(0, 0))
 		imgui.Begin('##mouse', _, imgui.WindowFlags.NoResize + imgui.WindowFlags.NoTitleBar + imgui.WindowFlags.AlwaysAutoResize + (move.v and 0 or imgui.WindowFlags.NoMove) )
 			mouse_pos = imgui.GetWindowPos()
 			for key, v in ipairs(mouse_keys) do
-				if key == 2 then renderWheel() imgui.SetCursorPosY(18) elseif key == 3 then imgui.SetCursorPosY(2) end -- �������
+				if key == 2 then renderWheel() imgui.SetCursorPosY(18) elseif key == 3 then imgui.SetCursorPosY(2) end 
 				local size = imgui.CalcTextSize(v[1])
 				if isKeyDown(v[2]) then
 					imgui.PushStyleColor(imgui.Col.ChildWindowBg, imgui.GetStyle().Colors[imgui.Col.ButtonActive])
@@ -121,7 +121,7 @@ function imgui.OnDrawFrame()
 					imgui.Text(v[1])
 				imgui.EndChild()
 				imgui.PopStyleColor()
-				if key ~= 3 then imgui.SameLine() end -- �������
+				if key ~= 3 then imgui.SameLine() end
 			end
 		imgui.End()
 		imgui.PopStyleColor()
@@ -156,9 +156,8 @@ function onScriptTerminate(s)
 end
 
 keyboards = {
-	{ -- ��� ����������
-		{ -- ������ 1
-			-- {��������, ���, ������}
+	{
+		{
 			{'Esc', 0x1B},
 			{'F1', 0x70},
 			{'F2', 0x71},
@@ -176,8 +175,7 @@ keyboards = {
 			{'SL', 0x91},
 			{'P', 0x13},
 		},
-		{ -- ������ 2
-			-- {��������, ���, ������}
+		{ 
 			{'`', 0xC0},
 			{'1', 0x31},
 			{'2', 0x32},
@@ -200,8 +198,7 @@ keyboards = {
 			{'*', 0x6A},
 			{'-', 0x6D},
 		},
-		{ -- ������ 3
-			-- {��������, ���, ������}
+		{ 
 			{'Tab', 0x09},
 			{'Q', 0x51},
 			{'W', 0x57},
@@ -224,8 +221,7 @@ keyboards = {
 			{'9', 0x69},
 			{'\n+', 0x6B},
 		},
-		{ -- ������ 4
-			-- {��������, ���, ������}
+		{
 			{'Caps ', 0x14},
 			{'A', 0x41},
 			{'S', 0x53},
@@ -243,8 +239,7 @@ keyboards = {
 			{'5', 0x65},
 			{'6', 0x66},
 		},
-		{ -- ������ 5
-			-- {��������, ���, ������}
+		{
 			{' LShift  ', 0xA0},
 			{'Z', 0x5A},
 			{'X', 0x58},
@@ -263,8 +258,7 @@ keyboards = {
 			{'3', 0x63},
 			{'\nE', 0x0D},
 		},
-		{ -- ������ 6
-			-- {��������, ���, ������}
+		{ 
 			{'Ctrl', 0xA2},
 			{'Win', 0x5B},
 			{'Alt', 0xA4},
@@ -279,7 +273,7 @@ keyboards = {
 			{'.', 0x6E},
 		}
 	},
-	{ -- ��� NumPad
+	{ 
 		{
 			{'Esc', 0x1B},
 			{'F1', 0x70},
@@ -376,7 +370,7 @@ keyboards = {
 			{'>', 0x27},
 		}
 	},
-	{ -- ������ �����
+	{ 
 		{
 			{'1', 0x31},
 			{'2', 0x32},
@@ -394,7 +388,7 @@ keyboards = {
 			{' Enter ', 0x0D},
 		}
 	},
-	{ -- ���������� �����
+	{ 
 		{
 			{'1', 0x31},
 			{'2', 0x32},
@@ -418,7 +412,7 @@ keyboards = {
 			{' Enter ', 0x0D},
 		}
 	},
-	{ -- ������ ����������
+	{ 
 		{
 			{'Tab', 0x09},
 			{'Q', 0x51},

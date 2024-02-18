@@ -8,6 +8,7 @@ local moonloader = require("moonloader")
 
 local imgui = require 'mimgui'
 local new = imgui.new
+local ffi = require 'ffi'
 
 
 local vk = require 'keysC'
@@ -19,46 +20,28 @@ local config = nil
 local settings = nil
 
 --Views
-local viewCreateMacro =  new.bool(true)
+local vCrearMacro =  {
+    visible = new.bool(false),
+    grabando = false,
+    buttonText = "Grabar KeyHot",
+    labelText = new.char[0x32](),
+
+    inputNameMacro = new.char[0x32](),
+    keysPress = {},
+    inputTimeWaitCmd = new.int(1000),
+    inputCommands = new.char[0x400](),
+    status = new.int(),
+    inCar = new.bool(false),
+    walking = new.bool(false),
+    all = new.bool(false),
+}
+
 local viewCreateEvento =  new.bool(false)
 local viewCreateSubComando =  new.bool(false)
 local settingView = new.bool(false)
 
-
-
-local menu_keys = {
-    VK_CONTROL,
-    VK_RCONTROL,
-    VK_LSHIFT,
-    VK_RSHIFT,
-    VK_LMENU,
-    VK_RMENU,
-    VK_MENU,
-    VK_SHIFT,
-}
--- Tabla con todas las letras
-local letras = {
-    VK_A, VK_B, VK_C, VK_D, VK_E, VK_F, VK_G, VK_H, VK_I, VK_J, VK_K, VK_L,
-    VK_M, VK_N, VK_O, VK_P, VK_Q, VK_R, VK_S, VK_T, VK_U, VK_V, VK_W, VK_X, VK_Y, VK_Z
-}
-
--- Tabla con todos los números
-local numeros = {
-    VK_0, VK_1, VK_2, VK_3, VK_4, VK_5, VK_6, VK_7, VK_8, VK_9
-}
-
--- Tabla con el teclado numérico
-local tecladoNumerico = {
-    VK_NUMPAD0, VK_NUMPAD1, VK_NUMPAD2, VK_NUMPAD3, VK_NUMPAD4,
-    VK_NUMPAD5, VK_NUMPAD6, VK_NUMPAD7, VK_NUMPAD8, VK_NUMPAD9
-}
-
-local keyIgnore = {
-    0x20,
-    0x5B
-}
-
 local X, Y = getScreenResolution()
+
 function main()
 
     wait(1000)
@@ -79,7 +62,7 @@ function main()
         settings.subComandosOn = new.bool(settings.subComandosOn)
 
         ViewSettings(settings)
-        CrearMacroView()
+        viewCrearMacro()
 
         CargarCommandosConfig(settings)
         CargarMacros(macros)
@@ -95,6 +78,7 @@ end
 function ViewSettings(settings)
     imgui.OnFrame(function() return settingView[0] end,
     function()
+
         imgui.SetNextWindowSize(imgui.ImVec2(194, 120), imgui.Cond.FirstUseEver)
         imgui.SetNextWindowPos(imgui.ImVec2(X / 2, Y / 2), imgui.Cond.FirstUseEver, imgui.ImVec2(0.5, 0.5))
 
@@ -106,7 +90,10 @@ function ViewSettings(settings)
         imgui.Checkbox("Acction On", settings.acctionOn)
         imgui.Checkbox("SubCommandos On", settings.subComandosOn)
         imgui.Separator()
-        if  imgui.Button("Crear Macro") then  CrearMacroView() end
+        if  imgui.Button("Crear Macro") then  
+            vCrearMacro.visible[0] = not vCrearMacro.visible[0] 
+            settingView[0] = not settingView[0] 
+        end
         imgui.SameLine()        
         if  imgui.Button("Crear Evento")  then  printString("Provando Macro", 3000) end
         imgui.SameLine()        
@@ -121,151 +108,73 @@ function ViewSettings(settings)
     
 end
 
-function CrearMacroView()
-
-    local text = imgui.new.char[50]()
-    local keysPress = {}
-    local grabando = false
-    local textButton = "Grabar Macro"
-    local keyText = ""
+function viewCrearMacro()
+    
     local thread = lua_thread.create_suspended(
         function() 
-            grabando = true
-            textButton = "Detener Grabacion"
-            keysPress = {}
 
-            while (grabando) do 
-                local keyPress = vk.get_key_pressed()
-                print(keyPress.category)
-                print(keyPress.name)
-                
-                table.insert(keysPress, keyPress)
+            vCrearMacro.buttonText = "Detener Grabacion"
+            vCrearMacro.grabando = true
+            vCrearMacro.keysPress = {}
+
+            while (vCrearMacro.grabando) do 
+                local key = vk.get_key_pressed()
+                local insert = true
+
+                if(key ~= nil and not existe_en_lista(keys, key)) then
+                    
+                    if(key.category ~= vk.categorys.KeyAccion) then 
+                        vCrearMacro.grabando = false 
+                        vCrearMacro.buttonText = "Grabar KeyHot"
+                    end
+                    
+                    if(key.category == vk.categorys.KeyAccion and #vCrearMacro.keysPress >= 2) then 
+                        vCrearMacro.grabando = true
+                        insert = false
+                    end
+                    
+                    if(insert) then 
+                        table.insert(vCrearMacro.keysPress, key)
+                        if(vCrearMacro.keysPress ~= nil) then
+                            vCrearMacro.labelText = vk.parse_array_keys_from_string(vCrearMacro.keysPress)
+                        end
+                    end
+                end
             end
         end
     )
+    
 
-
-    if (settingView[0] == true) then settingView[0] = false end
-    viewCreateMacro[0] = true;
-
-    imgui.OnFrame(function() return viewCreateMacro[0] end, 
+    imgui.OnFrame(function() return vCrearMacro.visible[0] end, 
     function ()
         imgui.SetNextWindowPos(imgui.ImVec2(X / 2, Y / 2), imgui.Cond.FirstUseEver, imgui.ImVec2(0.5, 0.5))
         imgui.SetNextWindowSize(imgui.ImVec2(194, 120), imgui.Cond.FirstUseEver)
-        imgui.Begin("New Macro", viewCreateMacro, imgui.WindowFlags.NoResize + imgui.WindowFlags.AlwaysAutoResize )
-        imgui.InputText("Name", text, 30)
-        if imgui.Button(textButton) then 
+        imgui.Begin("New Macro", vCrearMacro.visible, imgui.WindowFlags.NoResize + imgui.WindowFlags.AlwaysAutoResize )
+        imgui.InputText("Name", vCrearMacro.inputNameMacro, 30)
+        if imgui.Button(vCrearMacro.buttonText) then 
 
-            if not grabando then
+            if not vCrearMacro.grabando then
                 thread:run()
             else
                 if thread ~= nil then
                     thread:terminate(thread)
                 end
-                textButton = "Grabar Macro"
-                grabando = false
+                vCrearMacro.labelText = ""
+                vCrearMacro.keysPress = {}
+                vCrearMacro.buttonText = "Grabar KeyHot"
+                vCrearMacro.grabando = false
             end
-        end 
+        end
         imgui.SameLine()
-        imgui.Text(keyText )
-        end)
-
+        imgui.Text(vCrearMacro.labelText)
+        imgui.InputInt("Time between commands ms", vCrearMacro.inputTimeWaitCmd, 1000, 1000)
+        imgui.InputTextMultiline("Commands", vCrearMacro.inputCommands, 0x400,  imgui.ImVec2(0, 100))
+        imgui.RadioButton("In Car", vCrearMacro.inCar, 0)
+        imgui.RadioButton("Walking", vCrearMacro.walking, 1)
+        imgui.RadioButton("All", vCrearMacro.all, 2) 
+        
+    end)
 end
-
-
-
-
-
-function obtenerNombreTeclas(teclas)
-    local teclasMenuAtras, teclasTecladoAdelante = ordenarTeclas(teclas)
-    local nombreTeclas = ""
-
-    -- Obtener nombres de teclas de menú hacia atrás
-    for i, tecla in ipairs(teclasMenuAtras) do
-        nombreTeclas = nombreTeclas .. nombreTecla(tecla)
-        if i < #teclasMenuAtras then
-            nombreTeclas = nombreTeclas .. " + "
-        end
-    end
-
-    -- Agregar separador si hay teclas de ambos grupos
-    if #teclasMenuAtras > 0 and #teclasTecladoAdelante > 0 then
-        nombreTeclas = nombreTeclas .. " + "
-    end
-
-    -- Obtener nombres de teclas de teclado hacia adelante
-    for i, tecla in ipairs(teclasTecladoAdelante) do
-        nombreTeclas = nombreTeclas .. nombreTecla(tecla)
-        if i < #teclasTecladoAdelante then
-            nombreTeclas = nombreTeclas .. " + "
-        end
-    end
-
-    return nombreTeclas
-end
-
-function nombreTecla(tecla)
-    local nombreTeclas = {
-        [VK_LMENU] = "ALT",
-        [VK_RMENU] = "ALT",
-        [VK_MENU] = "ALT",
-        [VK_LCONTROL] = "CTRL",
-        [VK_RCONTROL] = "CTRL",
-        [VK_CONTROL] = "CTRL",
-        [VK_LSHIFT] = "SHIFT",
-        [VK_RSHIFT] = "SHIFT",
-        [VK_SHIFT] = "SHIFT",
-        [VK_0] = "0",
-        [VK_1] = "1",
-        [VK_2] = "2",
-        [VK_3] = "3",
-        [VK_4] = "4",
-        [VK_5] = "5",
-        [VK_6] = "6",
-        [VK_7] = "7",
-        [VK_8] = "8",
-        [VK_9] = "9",
-        [VK_NUMPAD0] = "NUM 0",
-        [VK_NUMPAD1] = "NUM 1",
-        [VK_NUMPAD2] = "NUM 2",
-        [VK_NUMPAD3] = "NUM 3",
-        [VK_NUMPAD4] = "NUM 4",
-        [VK_NUMPAD5] = "NUM 5",
-        [VK_NUMPAD6] = "NUM 6",
-        [VK_NUMPAD7] = "NUM 7",
-        [VK_NUMPAD8] = "NUM 8",
-        [VK_NUMPAD9] = "NUM 9",
-        [string.byte("A")] = "A",
-        [string.byte("B")] = "B",
-        [string.byte("C")] = "C",
-        [string.byte("D")] = "D",
-        [string.byte("E")] = "E",
-        [string.byte("F")] = "F",
-        [string.byte("G")] = "G",
-        [string.byte("H")] = "H",
-        [string.byte("I")] = "I",
-        [string.byte("J")] = "J",
-        [string.byte("K")] = "K",
-        [string.byte("L")] = "L",
-        [string.byte("M")] = "M",
-        [string.byte("N")] = "N",
-        [string.byte("O")] = "O",
-        [string.byte("P")] = "P",
-        [string.byte("Q")] = "Q",
-        [string.byte("R")] = "R",
-        [string.byte("S")] = "S",
-        [string.byte("T")] = "T",
-        [string.byte("U")] = "U",
-        [string.byte("V")] = "V",
-        [string.byte("W")] = "W",
-        [string.byte("X")] = "X",
-        [string.byte("Y")] = "Y",
-        [string.byte("Z")] = "Z",
-    }
-
-    return nombreTeclas[tecla] or string.char(tecla)
-end
-
 
 function tieneDosLetrasNumeros(tabla)
     
@@ -286,8 +195,8 @@ end
 function verificarCombinacion(tabla, key)
     
 
-    local letra = valorExiste(letras, key) or valorExiste(numeros, key) or valorExiste(tecladoNumerico, key)
-    local menu = valorExiste(menu_keys, key)
+    local letra = existe_en_lista(letras, key) or existe_en_lista(numeros, key) or existe_en_lista(tecladoNumerico, key)
+    local menu = existe_en_lista(menu_keys, key)
 
     local numLetras = contarElementos(tabla, letras) + contarElementos(tabla, numeros) + contarElementos(tabla, tecladoNumerico)
     local numMenu = contarElementos(tabla, menu_keys)
@@ -295,27 +204,11 @@ function verificarCombinacion(tabla, key)
     return (not letra or numLetras < 2) and (not menu or numMenu < 1)
 end
 
-function ordenarTeclas(teclas)
-    local teclasTecladoAdelante = {}
-    local teclasMenuAtrasOrdenadas = {}
-    
-    for _, tecla in ipairs(teclas) do
-        if valorExiste(menu_keys, tecla) then
-            table.insert(menu_keys, tecla)
-        else
-            table.insert(teclasTecladoAdelante, tecla)
-        end
-    end
+function existe_en_lista(tabla, elemento)
+    if tabla == nil then return false end
 
-    table.sort(teclasTecladoAdelante)
-    table.sort(teclasMenuAtrasOrdenadas)
-
-    return teclasMenuAtrasOrdenadas, teclasTecladoAdelante
-end
-
-function valorExiste(tabla, valor)
-    for _, v in ipairs(tabla) do
-        if v == valor then
+    for _, v in pairs(tabla) do
+        if v == elemento then
             return true
         end
     end
@@ -325,7 +218,7 @@ end
 function contarElementos(tabla, elementos)
     local count = 0
     for _, v in ipairs(tabla) do
-        if valorExiste(elementos, v) then
+        if existe_en_lista(elementos, v) then
             count = count + 1
         end
     end
@@ -334,6 +227,7 @@ end
 
 function CargarCommandosConfig(settings)
     sampRegisterChatCommand("md", function() settingView[0] = not settingView[0] end );
+    sampRegisterChatCommand("nm", function() vCrearMacro.visible[0] = not vCrearMacro.visible[0] end );
 end
 
 function CargarSubComandos(subComandos)
