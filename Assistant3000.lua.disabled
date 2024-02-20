@@ -1,0 +1,267 @@
+script_name('Asistente Samp')
+script_version('0.0.1')
+script_author('CryGeo')
+script_description('Puedes crear macros/acciones/funcione de muchos formas.')
+
+[[ imgui defectuosa el tira error en el imputText callback != 0]]
+
+local imgui = require 'imgui'
+local helpMet = require 'HelpMet'
+local ffi = require 'ffi'
+local vk = require 'keysC'
+
+local URL = "config/macrosDef.json"
+
+local vConfig = {
+    visible = imgui.ImBool(false),
+}
+
+local vCrearMacro = {
+    visible = imgui.ImBool(false),
+
+    buttonText = "Grabar KeyHot",
+    grabando = false,
+    labelText = "",
+    
+    inputNameMacro = imgui.ImBuffer(1024),
+    keysPress = {},
+    inputTimeWaitCmd = imgui.ImInt(1000),
+    inputCommands = imgui.ImBuffer(1024),
+    status = imgui.ImInt(0),
+
+}
+
+local vError = {
+    visible = imgui.ImBool(false),
+}
+
+local listas = {}
+
+local thread_GrabarKey = lua_thread.create_suspended(
+        function() 
+
+            vCrearMacro.buttonText = "Detener Grabacion"
+            vCrearMacro.grabando = true
+            vCrearMacro.keysPress = {}
+            vCrearMacro.labelText = ""
+
+            while (vCrearMacro.grabando) do 
+                local key = vk.get_key_pressed()
+                local insert = true
+
+                if(key ~= nil and not helpMet.existe_en_lista(vCrearMacro.keysPress, key)) then
+                    
+                    if(key.category ~= vk.categorys.KeyAccion) then 
+                        vCrearMacro.grabando = false 
+                        vCrearMacro.buttonText = "Grabar KeyHot"
+                    end
+                    
+                    if(key.category == vk.categorys.KeyAccion and #vCrearMacro.keysPress >= 2) then 
+                        vCrearMacro.grabando = true
+                        insert = false
+                    end
+                    
+                    if(insert) then 
+                        table.insert(vCrearMacro.keysPress, key)
+                        if(vCrearMacro.keysPress ~= nil) then
+                            vCrearMacro.labelText = vk.parse_array_keys_from_string(vCrearMacro.keysPress)
+                        end
+                    end
+                end
+            end
+        end
+    )
+
+
+function main()
+
+    --cargar datos del json
+    local config = helpMet.GetDataArchivo(URL)
+
+    vConfig.macrosOn = imgui.ImBool(config.settings.macrosOn)
+    vConfig.accionesOn = imgui.ImBool(config.settings.acctionOn)
+    vConfig.subComandosOn = imgui.ImBool(config.settings.subComandosOn)
+
+    listas.macros = config.Macros
+
+    CargarCommandosGlobal()
+    --CargarMacros()
+
+    while true do
+		wait(0)
+		imgui.Process = vConfig.visible.v or vCrearMacro.visible.v or vError.visible.v
+	end
+end 
+
+function imgui.OnDrawFrame()
+	local X, Y = getScreenResolution()
+	if vConfig.visible.v then
+        imgui.SetNextWindowSize(imgui.ImVec2(194, 120), imgui.Cond.FirstUseEver)
+        imgui.SetNextWindowPos(imgui.ImVec2(X / 2, Y / 2), imgui.Cond.FirstUseEver, imgui.ImVec2(0.5, 0.5))
+        
+        imgui.Begin("Settings", vConfig.visible, imgui.WindowFlags.NoResize + imgui.WindowFlags.AlwaysAutoResize)
+        imgui.Text("Configuracion del procesos.")
+        imgui.Checkbox("Mostrar Teclado", vConfig.macrosOn)
+        imgui.Checkbox("Acction Otn", vConfig.accionesOn)
+        imgui.Checkbox("SubCommandos On", vConfig.subComandosOn)
+        imgui.Separator()
+        if imgui.Button("Crear Macro") then
+            vCrearMacro.visible.v = not vCrearMacro.visible.v
+            vConfig.visible.v = not vConfig.visible.v
+        end
+        imgui.End()
+	end
+
+    if vCrearMacro.visible.v then
+        imgui.SetNextWindowPos(imgui.ImVec2(X / 2, Y / 2), imgui.Cond.FirstUseEver, imgui.ImVec2(0.5, 0.5))
+        imgui.SetNextWindowSize(imgui.ImVec2(194, 120), imgui.Cond.FirstUseEver)
+        imgui.Begin('New Macro', _, imgui.WindowFlags.NoResize + imgui.WindowFlags.AlwaysAutoResize )
+        if imgui.InputText('Name', vCrearMacro.inputNameMacro, 128) then
+            print('Temp:', vCrearMacro.inputNameMacro.v)
+        end
+        if imgui.Button(vCrearMacro.buttonText) then 
+
+            if not vCrearMacro.grabando then
+                thread_GrabarKey:run()
+            else
+                if thread_GrabarKey ~= nil then
+                    thread_GrabarKey:terminate(thread_GrabarKey)
+                end
+                vCrearMacro.labelText = ""
+                vCrearMacro.keysPress = {}
+                vCrearMacro.buttonText = "Grabar KeyHot"
+                vCrearMacro.grabando = false
+            end
+        end imgui.SameLine()
+        imgui.Text(vCrearMacro.labelText)
+        imgui.InputInt("Time between commands ms", vCrearMacro.inputTimeWaitCmd, 1000, 1000)
+        imgui.InputTextMultiline("Commands", vCrearMacro.inputCommands, 0x400,  imgui.ImVec2(0, 100))
+        imgui.Separator()
+        imgui.Text("Estado de activicion del macro")
+        imgui.RadioButton("All", vCrearMacro.status, 0) imgui.SameLine()
+        imgui.RadioButton("In Car", vCrearMacro.status, 1) imgui.SameLine()
+        imgui.RadioButton("Walking", vCrearMacro.status, 2) 
+        imgui.SetCursorPosY(275)
+        imgui.Separator()
+        imgui.SetCursorPosX((imgui.GetWindowWidth() - imgui.CalcTextSize('Crear Macro').x - imgui.CalcTextSize('Cancelar').x)/2.2)
+        imgui.SetCursorPosY(290)
+        if imgui.Button("Crear Macro") then
+            VerificarMacro()
+        end
+        imgui.SameLine()
+        if imgui.Button("Cancelar") then
+            CerrarVentanaCrearMacro()
+        end
+        imgui.End()
+    end
+
+    if vError.visible.v then 
+        imgui.SetNextWindowPos(imgui.ImVec2(X / 1.5, Y / 1.5), imgui.Cond.FirstUseEver, imgui.ImVec2(0.5, 0.5))
+        imgui.SetNextWindowSize(imgui.ImVec2(194, 120), imgui.Cond.FirstUseEver)
+        imgui.Begin("Error", vCrearMacro.visible, imgui.WindowFlags.NoResize + imgui.WindowFlags.AlwaysAutoResize )
+        imgui.SetCursorPosY(40)
+        imgui.Text("Campos incompletos")
+        imgui.SetCursorPosY(70)
+        imgui.Separator()
+        imgui.SetCursorPosY(80)
+        imgui.SetCursorPosX((imgui.GetWindowWidth() - imgui.CalcTextSize('Completar').x)/2.2)
+        if imgui.Button("Completar") then
+            vError.visible.v = false
+            vCrearMacro.visible.v = true
+        end
+        imgui.End()
+    end
+end
+
+function CerrarVentanaCrearMacro()
+    vCrearMacro.inputNameMacro.v = ""
+    vCrearMacro.keysPress = {}
+    vCrearMacro.inputTimeWaitCmd.v = 1000
+    vCrearMacro.inputCommands.v = ""
+    vCrearMacro.status.v = 0
+    vCrearMacro.labelText = ""
+    
+    vCrearMacro.visible.v = false
+    vConfig.visible.v = true
+end
+
+function VerificarMacro()
+    if vCrearMacro.inputNameMacro.v == "" 
+    or #vCrearMacro.keysPress == 0 
+    or vCrearMacro.inputTimeWaitCmd.v < 0
+    or vCrearMacro.inputCommands.v == ""
+    or vCrearMacro.grabando then
+        vCrearMacro.visible.v = false
+        vError.visible.v = true
+    else
+    
+    local newMacro = {
+        name = vCrearMacro.inputNameMacro.v,
+        keys = vCrearMacro.keysPress,
+        timeWaitCmds = vCrearMacro.inputTimeWaitCmd.v,
+        cmds = helpMet.split_lines(vCrearMacro.inputCommands.v),
+        inCar = vCrearMacro.status.v
+    }
+    
+    CerrarVentanaCrearMacro()
+    
+    helpMet.PrintTableValues(newMacro)
+    end
+end
+
+function CargarCommandosGlobal()
+    sampRegisterChatCommand("as", function() vConfig.visible.v = not vConfig.visible.v end );
+    --sampRegisterChatCommand("nm", function() vCrearMacro.visible[0] = not vCrearMacro.visible[0] end );
+end
+
+function CargarMacros()
+    local macros = listas.macros
+    sendConsoleMessageSamp("Cargando Macros...")
+    for _, macro in ipairs(macros) do
+        lua_thread.create( function() CreateMacro(macro) end)
+    end
+    sendConsoleMessageSamp("Se cargaron " .. #macros .. " macros.")
+
+end
+
+function CreateMacro(macro)
+    while true do
+        wait(20)
+
+        local comboPressed = vk.get_hotkey_pressed(macro.keys)
+
+        local estado = isCharInAnyCar(PLAYER_PED)
+
+        if comboPressed  and settings.macrosOn[0]  then
+
+            if macro.status == 0 then
+                EjecutarCmd(macro.cmds, macro.timeWaitCmds)
+            elseif macro.status == 1 and estado then
+                EjecutarCmd(macro.cmds, macro.timeWaitCmds)
+            elseif macro.status == 2 and not estado then  
+                EjecutarCmd(macro.cmds, macro.timeWaitCmds)
+            end
+            
+        end
+    end
+end
+
+function EjecutarCmd(cmds, time, consoleCmd)
+
+    local chatActive = sampIsChatInputActive()
+    
+    if chatActive and not consoleCmd then return end
+
+    for i, cmd in ipairs(cmds) do
+        sampSendChat(cmd)
+
+        if( i < #cmds) then
+            wait(time)
+        end
+    end
+end
+
+function sendConsoleMessageSamp(msg)
+    local index = string.format("{FFFFFF}[ {1FDADC}%s {FFFFFF}]: ", thisScript().name)
+    sampAddChatMessage(index .. msg, 0xD6DADC)
+end

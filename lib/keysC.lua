@@ -509,4 +509,36 @@ function keys.mergeArrays(arr1, arr2)
     return result
 end
 
+function keys.get_hotkey_pressed(keysM)
+    while true do
+        wait(0)
+        if #keysM == 1 then
+            if wasKeyPressed(keysM[1].value) and not keys.check_key_pressed_KeyAccion() then
+                return true
+            end
+        else
+            
+            local allPress = true
+
+            for i, v in pairs(keysM) do
+                if i == #keysM then 
+                    if not wasKeyPressed(v.value) then allPress = false end
+                else
+                    if not isKeyDown(v.value) then allPress = false end
+                end
+            end
+
+            if allPress then return true end
+        end
+    end
+end
+
+function keys.check_key_pressed_KeyAccion()
+    return (isKeyDown(keys.VK_LSHIFT) or 
+   isKeyDown(keys.VK_RSHIFT) or 
+   isKeyDown(keys.VK_LCONTROL) or 
+   isKeyDown(keys.VK_RCONTROL) or 
+   isKeyDown(keys.VK_LMENU) or
+   isKeyDown(keys.VK_RMENU) )
+end
 return keys

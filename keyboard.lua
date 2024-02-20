@@ -35,7 +35,7 @@ local keyboard_pos = imgui.ImVec2(ini.pos.x, ini.pos.y)
 local mouse_pos = imgui.ImVec2(ini.mouse.x, ini.mouse.y)
 local theme = imgui.ImInt(ini.config.theme)
 
-local wheel = {} -- ���� ����������� �������� ������
+local wheel = {} 
 
 function main()
 	sampRegisterChatCommand('keyboard', function() settings.v = not settings.v end)

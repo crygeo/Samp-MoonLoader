@@ -30,10 +30,7 @@ local vCrearMacro =  {
     keysPress = {},
     inputTimeWaitCmd = new.int(1000),
     inputCommands = new.char[0x400](),
-    status = new.int(),
-    inCar = new.bool(false),
-    walking = new.bool(false),
-    all = new.bool(false),
+    status = new.int(0),
 }
 
 local viewCreateEvento =  new.bool(false)
@@ -55,7 +52,7 @@ function main()
         local acciones = config.Accions
         local subComandos = config.SubComandos
 
-        settings = config.Settings
+        settings = config.settings
         
         settings.macrosOn = new.bool(settings.macrosOn)
         settings.acctionOn = new.bool(settings.acctionOn)
@@ -169,9 +166,10 @@ function viewCrearMacro()
         imgui.Text(vCrearMacro.labelText)
         imgui.InputInt("Time between commands ms", vCrearMacro.inputTimeWaitCmd, 1000, 1000)
         imgui.InputTextMultiline("Commands", vCrearMacro.inputCommands, 0x400,  imgui.ImVec2(0, 100))
-        imgui.RadioButton("In Car", vCrearMacro.inCar, 0)
-        imgui.RadioButton("Walking", vCrearMacro.walking, 1)
-        imgui.RadioButton("All", vCrearMacro.all, 2) 
+        imgui.RadioButtonIntPtr("In Car", vCrearMacro.status, 0)
+        imgui.RadioButtonIntPtr("Walking", vCrearMacro.status, 1)
+        imgui.RadioButtonIntPtr("All", vCrearMacro.status, 2)
+        
         
     end)
 end
