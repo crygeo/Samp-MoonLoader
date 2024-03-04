@@ -1,0 +1,594 @@
+[33mcommit 838ffab21a290c74b3b8395d65f28cdc748c4cb7[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m, [m[1;31morigin/main[m[33m)[m
+Author: Geovanny <zambranojaramillo3@gmail.com>
+Date:   Mon Feb 19 22:41:41 2024 -0500
+
+    19/02/2024 Verificar tecla repetidas
+
+[1mdiff --git a/Assistant3000.lua b/Assistant3000.lua[m
+[1mindex 60ee97d..31bcd0a 100644[m
+[1m--- a/Assistant3000.lua[m
+[1m+++ b/Assistant3000.lua[m
+[36m@@ -1,56 +1,482 @@[m
+[31m-script_author('CaJlaT')[m
+[31m-script_name('KeyBoard')[m
+[31m-script_version('2.1')[m
+[32m+[m[32mscript_name('Asistente Samp')[m
+[32m+[m[32mscript_version('0.0.1')[m
+[32m+[m[32mscript_author('CryGeo')[m
+[32m+[m[32mscript_description('Puedes crear macros/acciones/funcione de muchos formas.')[m
+ [m
+[32m+[m[32mlocal dkjson = require("lib/dkjson-master/dkjson")[m
+ [m
+[31m-local imgui = require 'imgui'[m
+[32m+[m[32mlocal imgui = require 'mimgui'[m
+[32m+[m[32mlocal new = imgui.new[m
+ local helpMet = require 'HelpMet'[m
+[31m-[m
+[32m+[m[32mlocal ffi = require 'ffi'[m
+[32m+[m[32mlocal vk = require 'keysC'[m
+ [m
+ local URL = "config/macrosDef.json"[m
+[31m-local viewConfig = {[m
+[31m-    visible = imgui.ImBool(true),[m
+[32m+[m[32mlocal X, Y = getScreenResolution()[m
+[32m+[m
+[32m+[m[32mlocal vConfig = {[m
+[32m+[m[32m    visible = new.bool(false),[m
+[32m+[m[32m}[m
+[32m+[m
+[32m+[m[32mlocal vAllviews = {[m
+[32m+[m[32m    visible = new.bool(false),[m
+[32m+[m[32m}[m
+[32m+[m
+[32m+[m[32mlocal vCrearMacro = {[m
+[32m+[m[32m    visible = new.bool(false),[m
+[32m+[m[32m    name = "",[m
+[32m+[m[32m    index = 0,[m
+[32m+[m
+[32m+[m[32m    buttonText = "Grabar KeyHot",[m
+[32m+[m[32m    grabando = false,[m
+[32m+[m[32m    labelText = "",[m
+     [m
+[32m+[m[32m    inputNameMacro = new.char[64](),[m
+[32m+[m[32m    keysPress = {},[m
+[32m+[m[32m    inputTimeWaitCmd = new.int(1000),[m
+[32m+[m[32m    inputCommands = new.char[1024](),[m
+[32m+[m[32m    status = new.int(0),[m
+[32m+[m
+ }[m
+[31m-local items = imgui.ImInt(0)[m
+ [m
+[31m-function main()[m
+[32m+[m[32mlocal vPopup = {[m
+[32m+[m[32m    Error = {[m[41m [m
+[32m+[m[32m        visible = new.bool(false)[m
+[32m+[m[32m    },[m
+[32m+[m[32m    Delete = {[m
+[32m+[m[32m        visible = new.bool(false),[m
+[32m+[m[32m    },[m
+[32m+[m[32m    KeyRepetido = {[m
+[32m+[m[32m        visible = new.bool(false),[m
+[32m+[m[32m    }[m
+[32m+[m[32m}[m
+[32m+[m
+[32m+[m[32mlocal global_data = {}[m
+[32m+[m
+[32m+[m
+[32m+[m[32mlocal thread_GrabarKey = lua_thread.create_suspended([m
+[32m+[m[32m        function()[m[41m [m
+[32m+[m
+[32m+[m[32m            vCrearMacro.buttonText = "Detener Grabacion"[m
+[32m+[m[32m            vCrearMacro.grabando = true[m
+[32m+[m[32m            vCrearMacro.keysPress = {}[m
+[32m+[m[32m            vCrearMacro.labelText = ""[m
+ [m
+[32m+[m[32m            while (vCrearMacro.grabando) do[m[41m [m
+[32m+[m[32m                local key = vk.get_key_pressed()[m
+[32m+[m[32m                local insert = true[m
+[32m+[m
+[32m+[m[32m                if(key ~= nil and not helpMet.existe_en_lista(vCrearMacro.keysPress, key)) then[m
+[32m+[m[41m                    [m
+[32m+[m[32m                    if(key.category ~= vk.categorys.KeyAccion) then[m[41m [m
+[32m+[m[32m                        vCrearMacro.grabando = false[m[41m [m
+[32m+[m[32m                        vCrearMacro.buttonText = "Grabar KeyHot"[m
+[32m+[m[32m                    end[m
+[32m+[m[41m                    [m
+[32m+[m[32m                    if(key.category == vk.categorys.KeyAccion and #vCrearMacro.keysPress >= 2) then[m[41m [m
+[32m+[m[32m                        vCrearMacro.grabando = true[m
+[32m+[m[32m                        insert = false[m
+[32m+[m[32m                    end[m
+[32m+[m[41m                    [m
+[32m+[m[32m                    if(insert) then[m[41m [m
+[32m+[m[32m                        table.insert(vCrearMacro.keysPress, key)[m
+[32m+[m[32m                        if(vCrearMacro.keysPress ~= nil) then[m
+[32m+[m[32m                            vCrearMacro.labelText = vk.parse_array_keys_from_string(vCrearMacro.keysPress)[m
+[32m+[m[32m                        end[m
+[32m+[m[32m                    end[m
+[32m+[m[32m                end[m
+[32m+[m[32m            end[m
+[32m+[m[32m        end[m
+[32m+[m[32m)[m
+[32m+[m
+[32m+[m[32mfunction main()[m
+     --cargar datos del json[m
+[31m-    local config = helpMet.GetDataArchivo(URL)[m
+[31m-    viewConfig.macros = config.Macros[m
+[31m-    viewConfig.acciones = config.Accions[m
+[31m-    viewConfig.subComandos = config.SubComandos[m
+[31m-[m
+[31m-    sampRegisterChatCommand('as', function() viewConfig.visible.v = not viewConfig.visible.v end)[m
+[31m-    while true do[m
+[31m-		wait(0)[m
+[31m-		imgui.Process = viewConfig.visible.v[m
+[31m-	end[m
+[31m-end[m
+[31m-[m
+[31m-function imgui.OnDrawFrame()[m
+[31m-	local X, Y = getScreenResolution()[m
+[31m-	if viewConfig.visible.v then[m
+[31m-        imgui.Begin("Settings", viewConfig.visible, imgui.WindowFlags.NoResize + imgui.WindowFlags.AlwaysAutoResize)[m
+[32m+[m[32m    global_data = helpMet.GetDataArchivo(URL)[m
+[32m+[m
+[32m+[m[32m    if global_data == nil then[m
+[32m+[m[32m        global_data = {}[m
+[32m+[m[32m        global_data.settings = {[m
+[32m+[m[32m            macrosOn = true,[m
+[32m+[m[32m            acctionOn = true,[m
+[32m+[m[32m            subComandosOn = true,[m
+[32m+[m[32m        }[m
+[32m+[m[32m    end[m
+     [m
+[32m+[m[32m    vConfig.macrosOn = new.bool(global_data.settings.macrosOn)[m
+[32m+[m[32m    vConfig.accionesOn = new.bool(global_data.settings.acctionOn)[m
+[32m+[m[32m    vConfig.subComandosOn = new.bool(global_data.settings.subComandosOn)[m
+[32m+[m
+[32m+[m[32m    while not isSampAvailable() do wait(50) end[m
+[32m+[m[32m    CargarCommandosGlobal()[m
+[32m+[m[32m    CargarMacros()[m
+[32m+[m[32mend[m
+[32m+[m
+[32m+[m
+[32m+[m
+[32m+[m
+[32m+[m[32mimgui.OnFrame( function() return vConfig.visible[0] end,[m
+[32m+[m[32m    function()[m
+[32m+[m[32m        imgui.SetNextWindowSize(imgui.ImVec2(194, 120), imgui.Cond.FirstUseEver)[m
+[32m+[m[32m        imgui.SetNextWindowPos(imgui.ImVec2(X / 2, Y / 2), imgui.Cond.FirstUseEver, imgui.ImVec2(0.5, 0.5))[m
+         [m
+[31m-        imgui.Text("Configuracion del procesos.") -- Display some text (you can use a format strings too)[m
+[31m-        imgui.Checkbox("Macros On", viewConfig.macrosOn) -- Edit bools storing our window open/close state[m
+[31m-        imgui.Checkbox("Acction On", viewConfig.acctionOn)[m
+[31m-        imgui.Checkbox("SubCommandos On", viewConfig.subComandosOn)[m
+[32m+[m[32m        imgui.Begin("Configuracion", vConfig.visible, imgui.WindowFlags.NoResize + imgui.WindowFlags.AlwaysAutoResize)[m
+[32m+[m[32m        imgui.Text("Configuracion del procesos.")[m
+[32m+[m[32m        imgui.Checkbox("Macros On", vConfig.macrosOn)[m
+[32m+[m[32m        imgui.Checkbox("Acction On", vConfig.accionesOn)[m
+[32m+[m[32m        imgui.Checkbox("SubCommandos On", vConfig.subComandosOn)[m
+         imgui.Separator()[m
+[31m-        if  imgui.Button("Crear Macro") then  [m
+[31m-            vCrearMacro.visible[0] = not vCrearMacro.visible[0] [m
+[31m-            settingView[0] = not settingView[0] [m
+[31m-        end[m
+[31m-        imgui.SameLine()        [m
+[31m-        if  imgui.Button("Crear Evento")  then  printString("Provando Macro", 3000) end[m
+[31m-        imgui.SameLine()        [m
+[31m-        if  imgui.Button("Crear Sub Cmd") then  printString("Provando Macro", 3000) end[m
+[31m-        imgui.SameLine()        [m
+[31m-       [m
+[31m-    [m
+[32m+[m[32m        if imgui.Button("Crear Macro") then newMacro() end[m
+[32m+[m[32m        if imgui.Button("Ver All") then buttonAllView() end[m
+[32m+[m[32m        imgui.End()[m
+[32m+[m[32m    end[m
+[32m+[m[32m)[m
+[32m+[m
+[32m+[m[32mimgui.OnFrame( function() return vCrearMacro.visible[0] end,[m[41m [m
+[32m+[m[32m    function()[m
+[32m+[m[32m        imgui.SetNextWindowSize(imgui.ImVec2(194, 120), imgui.Cond.FirstUseEver)[m
+[32m+[m[32m        imgui.SetNextWindowPos(imgui.ImVec2(X / 2, Y / 2), imgui.Cond.FirstUseEver, imgui.ImVec2(0.5, 0.5))[m
+[32m+[m[41m        [m
+[32m+[m[32m        imgui.Begin(vCrearMacro.name, vCrearMacro.visible, imgui.WindowFlags.NoResize + imgui.WindowFlags.AlwaysAutoResize)[m
+[32m+[m[41m        [m
+[32m+[m[32m        imgui.InputText('Name', vCrearMacro.inputNameMacro, 128)[m
+[32m+[m[32m        if imgui.Button(vCrearMacro.buttonText) then[m[41m [m
+[32m+[m[41m            [m
+[32m+[m[32m            if not vCrearMacro.grabando then[m
+[32m+[m[32m                thread_GrabarKey:run()[m
+[32m+[m[32m            else[m
+[32m+[m[32m                if thread_GrabarKey ~= nil then[m
+[32m+[m[32m                    thread_GrabarKey:terminate(thread_GrabarKey)[m
+[32m+[m[32m                end[m
+[32m+[m[32m                vCrearMacro.labelText = ""[m
+[32m+[m[32m                vCrearMacro.keysPress = {}[m
+[32m+[m[32m                vCrearMacro.buttonText = "Grabar KeyHot"[m
+[32m+[m[32m                vCrearMacro.grabando = false[m
+[32m+[m[32m            end[m
+[32m+[m[32m        end imgui.SameLine()[m
+[32m+[m[32m        imgui.Text(vCrearMacro.labelText)[m
+[32m+[m[32m        imgui.InputInt("Time between commands ms", vCrearMacro.inputTimeWaitCmd, 1000, 1000)[m
+[32m+[m[32m        imgui.InputTextMultiline("Commands", vCrearMacro.inputCommands, 0x400,  imgui.ImVec2(0, 100))[m
+[32m+[m[32m        imgui.Separator()[m
+[32m+[m[32m        imgui.Text("Estado de activicion del macro")[m
+[32m+[m[32m        imgui.RadioButtonIntPtr("All", vCrearMacro.status, 0) imgui.SameLine()[m
+[32m+[m[32m        imgui.RadioButtonIntPtr("In Car", vCrearMacro.status, 1) imgui.SameLine()[m
+[32m+[m[32m        imgui.RadioButtonIntPtr("Walking", vCrearMacro.status, 2)[m[41m [m
+[32m+[m[32m        imgui.SetCursorPosY(275)[m
+[32m+[m[32m        imgui.Separator()[m
+[32m+[m[32m        imgui.SetCursorPosX((imgui.GetWindowWidth() - imgui.CalcTextSize('Crear Macro').x - imgui.CalcTextSize('Cancelar').x)/2.2)[m
+[32m+[m[32m        imgui.SetCursorPosY(290)[m
+[32m+[m[32m        if imgui.Button("Aceptar") then[m
+[32m+[m[32m            buttonAceptarViewMacro()[m
+[32m+[m[32m        end[m
+[32m+[m[32m        imgui.SameLine()[m
+[32m+[m[32m        if imgui.Button("Cancelar") then[m
+[32m+[m[32m            buttonCancelarViewMacro()[m
+[32m+[m[32m        end[m
+[32m+[m
+[32m+[m[32m        if vPopup.Error.visible[0] then[m
+[32m+[m[32m            imgui.OpenPopup("Error")[m
+[32m+[m[32m        end[m
+[32m+[m[32m        if imgui.BeginPopupModal("Error", _, imgui.WindowFlags.NoResize) then[m
+[32m+[m[32m            imgui.SetWindowSizeVec2(imgui.ImVec2(250, 100))[m
+[32m+[m[32m            imgui.TextWrapped('Faltan datos de completar.')[m
+[32m+[m[32m            imgui.SetCursorPosY(55)[m
+[32m+[m[32m            imgui.Separator()[m
+[32m+[m[32m            imgui.SetCursorPosY(65)[m
+[32m+[m[32m            if imgui.Button("Aceptar", imgui.ImVec2(280, 24)) then[m
+[32m+[m[32m                vPopup.Error.visible[0] = false[m
+[32m+[m[32m                imgui.CloseCurrentPopup()[m
+[32m+[m[32m            end[m
+[32m+[m[32m        end[m
+[32m+[m[32m        if vPopup.KeyRepetido.visible[0] then[m
+[32m+[m[32m            imgui.OpenPopup("HotKeyRepetido")[m
+[32m+[m[32m        end[m
+[32m+[m[32m        if imgui.BeginPopupModal("HotKeyRepetido", _, imgui.WindowFlags.NoResize) then[m
+[32m+[m[32m            imgui.SetWindowSizeVec2(imgui.ImVec2(250, 100))[m[41m [m
+[32m+[m[32m            imgui.TextWrapped('La combinacion es igual al macro:')[m
+[32m+[m[32m            imgui.Text(vPopup.KeyRepetido.macro.name)[m
+[32m+[m[32m            imgui.TextWrapped('Aun desea agregar el macro?')[m
+[32m+[m[32m            imgui.SetCursorPosY(55)[m
+[32m+[m[32m            imgui.Separator()[m
+[32m+[m[32m            imgui.SetCursorPosY(65)[m
+[32m+[m[32m            if imgui.Button("Aceptar", imgui.ImVec2(110, 24)) then[m[41m [m
+[32m+[m[32m                vPopup.KeyRepetido.visible[0] = false[m
+[32m+[m[32m                vPopup.KeyRepetido.add = true[m
+[32m+[m[32m                imgui.CloseCurrentPopup()[m
+[32m+[m[32m            end[m
+[32m+[m[32m            imgui.SameLine()[m
+[32m+[m[32m            if imgui.Button("Cancelar", imgui.ImVec2(110, 24)) then[m[41m [m
+[32m+[m[32m                vPopup.KeyRepetido.visible[0] = false[m
+[32m+[m[32m                vPopup.KeyRepetido.add = false[m
+[32m+[m[32m                imgui.CloseCurrentPopup()[m
+[32m+[m[32m            end[m
+[32m+[m[32m        end[m
+         imgui.End()[m
+[31m-	end[m
+[32m+[m[32m    end[m
+[32m+[m[32m)[m
+[32m+[m
+[32m+[m[32mimgui.OnFrame( function() return vAllviews.visible[0] end,[m
+[32m+[m[32m    function()[m[41m [m
+[32m+[m[32m        imgui.SetNextWindowSize(imgui.ImVec2(300, 400), imgui.Cond.Always)[m
+[32m+[m[32m        imgui.SetNextWindowPos(imgui.ImVec2( 50, 50), imgui.Cond.FirstUseEver, imgui.ImVec2(0,0))[m
+[32m+[m[32m        imgui.Begin("Vista completa", vAllviews.visible, imgui.WindowFlags.NoResize + imgui.WindowFlags.AlwaysAutoResize)[m
+[32m+[m[32m        if imgui.BeginTabBar("Tabs") then[m
+[32m+[m[32m            if imgui.BeginTabItem("Macros") then[m
+[32m+[m[32m                for index, macro in ipairs(global_data.list_macro) do[m
+[32m+[m[32m                    crearVistaItems(macro, index)[m
+[32m+[m[32m                end[m
+[32m+[m[32m                imgui.EndTabItem()[m
+[32m+[m[32m            end[m
+[32m+[m[32m            if imgui.BeginTabItem("Acciones") then[m
+[32m+[m[32m                imgui.EndTabItem()[m
+[32m+[m[32m            end[m
+[32m+[m[32m            if imgui.BeginTabItem("SubCommandos") then[m
+[32m+[m[32m                imgui.EndTabItem()[m
+[32m+[m[32m            end[m
+[32m+[m[32m        end[m
+[32m+[m[41m        [m
+[32m+[m[32m        if vPopup.Delete.visible[0] then[m
+[32m+[m[32m            imgui.OpenPopup("Delete")[m
+[32m+[m[32m        end[m
+[32m+[m[32m        if imgui.BeginPopupModal("Delete", _, imgui.WindowFlags.NoResize) then[m
+[32m+[m[32m            imgui.SetWindowSizeVec2(imgui.ImVec2(250, 100))[m
+[32m+[m[32m            imgui.TextWrapped('Seguro que quieres elimar el macro.')[m
+[32m+[m[32m            imgui.SetCursorPosY(55)[m
+[32m+[m[32m            imgui.Separator()[m
+[32m+[m[32m            imgui.SetCursorPosY(65)[m
+[32m+[m[32m            if imgui.Button("Aceptar", imgui.ImVec2(110, 24)) then[m[41m [m
+[32m+[m[32m                vPopup.Delete.visible[0] = false[m
+[32m+[m[32m                table.remove(global_data.list_macro, vPopup.Delete.index)[m
+[32m+[m[32m                imgui.CloseCurrentPopup()[m
+[32m+[m[32m            end[m
+[32m+[m[32m            imgui.SameLine()[m
+[32m+[m[32m            if imgui.Button("Cancelar", imgui.ImVec2(110, 24)) then[m
+[32m+[m[32m                vPopup.Delete.visible[0] = false[m
+[32m+[m[32m                imgui.CloseCurrentPopup()[m
+[32m+[m[32m            end[m
+[32m+[m[32m        end[m
+[32m+[m[41m        [m
+[32m+[m[32m    end[m
+[32m+[m[32m)[m
+[32m+[m
+[32m+[m[32mfunction CargarCommandosGlobal()[m
+[32m+[m[32m    sampRegisterChatCommand("as", function() vConfig.visible[0] = not vConfig.visible[0] end );[m
+[32m+[m[32m    sampRegisterChatCommand("cm", function() newMacro() end );[m
+[32m+[m[32m    sampRegisterChatCommand("vall", function() vAllviews.visible[0] = not vAllviews.visible[0] end );[m
+[32m+[m[32mend[m
+[32m+[m
+[32m+[m[32mfunction crearVistaItems(macro, index)[m
+[32m+[m[32m    if imgui.CollapsingHeader(macro.name) then[m
+[32m+[m[32m        imgui.Text("Key Activate: ")[m
+[32m+[m[32m        imgui.Text("\t" .. vk.parse_array_keys_from_string(macro.keys))[m
+[32m+[m[32m        imgui.Separator()[m
+[32m+[m[32m        imgui.Text("Commands:")[m
+[32m+[m[32m        imgui.Text("\t" .. helpMet.format_Commands(macro.cmds))[m
+[32m+[m[32m        imgui.Separator()[m
+[32m+[m[32m        imgui.Text("Status:")[m
+[32m+[m[32m        imgui.Text("\t" .. helpMet.translate_movement_type(macro.status))[m
+[32m+[m[32m        imgui.Separator()[m
+[32m+[m[32m        imgui.Text("Timeout to activate next command :")[m
+[32m+[m[32m        imgui.Text("\t" .. macro.timeWaitCmds .. " ms")[m
+[32m+[m[32m        imgui.Separator()[m
+[32m+[m[32m        local checkbox = new.bool(macro.enable)[m
+[32m+[m[32m        if imgui.Checkbox("Enable macro", checkbox) then[m[41m [m
+[32m+[m[32m            macro.enable = checkbox[0][m
+[32m+[m[32m            helpMet.SaveDataJson(URL, global_data)[m
+[32m+[m[32m        end[m
+[32m+[m[32m        imgui.SameLine()[m
+[32m+[m[32m        if imgui.Button("Activar") then[m
+[32m+[m[32m            EjecutarCmd(macro)[m
+[32m+[m[32m        end[m
+[32m+[m[32m        imgui.SameLine()[m
+[32m+[m[32m        if imgui.Button("Editar") then[m
+[32m+[m[32m            EditarMacro(macro, index)[m
+[32m+[m[32m        end[m
+[32m+[m[32m        imgui.SameLine()[m
+[32m+[m[32m        if imgui.Button("Eliminar") then[m
+[32m+[m[32m            vPopup.Delete.index = index[m
+[32m+[m[32m            vPopup.Delete.visible[0] = true[m
+[32m+[m[32m        end[m
+[32m+[m[41m        [m
+[32m+[m[32m    end[m
+[32m+[m[32mend[m
+[32m+[m
+[32m+[m[32mfunction EditarMacro(macro, index)[m
+[32m+[m[32m    vCrearMacro.visible[0] = true[m
+[32m+[m[32m    vCrearMacro.index = index[m
+[32m+[m[32m    vCrearMacro.name = "Editar Macro"[m
+[32m+[m[32m    vCrearMacro.labelText = vk.parse_array_keys_from_string(macro.keys)[m
+[32m+[m[32m    vCrearMacro.inputNameMacro = new.char[64](macro.name)[m
+[32m+[m[32m    vCrearMacro.inputTimeWaitCmd[0] = macro.timeWaitCmds[m
+[32m+[m[32m    vCrearMacro.keysPress = macro.keys[m
+[32m+[m[32m    vCrearMacro.inputCommands = new.char[1024](helpMet.format_Commands(macro.cmds))[m
+[32m+[m[32m    vCrearMacro.status[0] = macro.status[m
+[32m+[m
+[32m+[m[32mend[m
+[32m+[m
+[32m+[m[32mfunction buttonAllView()[m
+[32m+[m[32m    vAllviews.visible[0] = true[m
+[32m+[m[32m    vConfig.visible[0] = false[m
+[32m+[m[32mend[m
+[32m+[m
+[32m+[m[32mfunction newMacro()[m
+[32m+[m[32m    vCrearMacro.visible[0] = not vCrearMacro.visible[0][m
+[32m+[m[32m    vCrearMacro.name = "Nuevo Macro"[m
+[32m+[m[32m    limparViewMacro()[m
+[32m+[m[32mend[m
+[32m+[m
+[32m+[m[32mfunction limparViewMacro()[m
+[32m+[m[32m    vCrearMacro.inputNameMacro = new.char[64]()[m
+[32m+[m[32m    vCrearMacro.keysPress = {}[m
+[32m+[m[32m    vCrearMacro.inputTimeWaitCmd[0] = 1000[m
+[32m+[m[32m    vCrearMacro.inputCommands = new.char[1024]()[m
+[32m+[m[32m    vCrearMacro.status[0] = 0[m
+[32m+[m[32m    vCrearMacro.labelText = new.char[1024]()[m
+[32m+[m[32m    vCrearMacro.index = 0[m
+[32m+[m[41m    [m
+[32m+[m[32mend[m
+[32m+[m
+[32m+[m[32mfunction buttonCancelarViewMacro()[m
+[32m+[m[32m    limparViewMacro()[m
+[32m+[m
+[32m+[m[32m    vCrearMacro.visible[0] = false[m
+[32m+[m[32mend[m
+[32m+[m
+[32m+[m[32mfunction buttonAceptarViewMacro()[m
+[32m+[m[32m    --Verificar datos completos[m
+[32m+[m[32m    if ffi.string(vCrearMacro.inputNameMacro) == ""[m
+[32m+[m[32m    or #vCrearMacro.keysPress == 0[m[41m [m
+[32m+[m[32m    or vCrearMacro.inputTimeWaitCmd[0] < 0[m
+[32m+[m[32m    or ffi.string(vCrearMacro.inputCommands) == ""[m
+[32m+[m[32m    or vCrearMacro.grabando then[m
+[32m+[m[32m        vPopup.Error.visible[0] = true[m
+[32m+[m[32m    else[m
+[32m+[m[41m        [m
+[32m+[m[32m        --combierto datos a tabla[m
+[32m+[m[32m        local macro = {[m
+[32m+[m[32m            name = ffi.string(vCrearMacro.inputNameMacro),[m
+[32m+[m[32m            keys = vCrearMacro.keysPress,[m
+[32m+[m[32m            timeWaitCmds = vCrearMacro.inputTimeWaitCmd[0],[m
+[32m+[m[32m            cmds = helpMet.split_lines(ffi.string(vCrearMacro.inputCommands)),[m
+[32m+[m[32m            status = vCrearMacro.status[0],[m
+[32m+[m[32m            enable = true[m
+[32m+[m[32m        }[m
+[32m+[m[41m        [m
+[32m+[m[32m        local arrg1, arrg2, arrg3 = verificar_keys_existed(macro.keys)[m
+[32m+[m
+[32m+[m[32m        if arrg1 then[m
+[32m+[m[32m            vPopup.KeyRepetido.visible[0] = true[m
+[32m+[m[32m            vPopup.KeyRepetido.macro = arrg2[m
+[32m+[m[32m            vPopup.KeyRepetido.index = arrg3[m
+[32m+[m
+[32m+[m[32m            _ = lua_thread.create([m
+[32m+[m[32m            function ()[m
+[32m+[m[32m                while vPopup.KeyRepetido.visible[0] do wait(50) end[m
+[32m+[m[32m                if vPopup.KeyRepetido.add then[m
+[32m+[m[32m                    addDatos()[m
+[32m+[m[32m                end[m
+[32m+[m[32m            end)[m
+[32m+[m
+[32m+[m[32m        else[m
+[32m+[m[32m            addDatos()[m
+[32m+[m[32m        end[m[41m [m
+[32m+[m[41m        [m
+[32m+[m[32m        function addDatos()[m
+[32m+[m[32m            if (vCrearMacro.index == 0 ) then[m
+[32m+[m[32m                table.insert(global_data.list_macro, macro)[m
+[32m+[m[32m                CreateMacro(macro)[m
+[32m+[m[32m            else[m
+[32m+[m[32m                global_data.list_macro[vCrearMacro.index].name = macro.name[m
+[32m+[m[32m                global_data.list_macro[vCrearMacro.index].keys = macro.keys[m
+[32m+[m[32m                global_data.list_macro[vCrearMacro.index].timeWaitCmds = macro.timeWaitCmds[m
+[32m+[m[32m                global_data.list_macro[vCrearMacro.index].cmds = macro.cmds[m
+[32m+[m[32m                global_data.list_macro[vCrearMacro.index].status = macro.status[m
+[32m+[m[32m                global_data.list_macro[vCrearMacro.index].enable = macro.enable[m
+[32m+[m[32m            end[m
+[32m+[m
+[32m+[m[32m            limparViewMacro()[m
+[32m+[m[32m            helpMet.SaveDataJson(URL, global_data)[m
+[32m+[m[32m            vCrearMacro.visible[0] = false[m
+[32m+[m
+[32m+[m[32m        end[m
+[32m+[m[41m            [m
+[32m+[m[32m    end[m
+[32m+[m[32mend[m
+[32m+[m
+[32m+[m[32mfunction verificar_keys_existed(keysComparter)[m
+[32m+[m[32m    for index, macro in pairs(global_data.list_macro) do[m
+[32m+[m[32m        helpMet.PrintTableValues(keysComparter)[m
+[32m+[m[32m        helpMet.PrintTableValues(macro.keys)[m
+[32m+[m[32m        local esIgual = false[m
+[32m+[m[32m        for i, tecla in ipairs(macro.keys) do[m
+[32m+[m[32m            if keysComparter[i] ~= nil then[m
+[32m+[m[32m                if tecla.value ==  keysComparter[i].value then[m
+[32m+[m[32m                    esIgual = true[m
+[32m+[m[32m                end[m
+[32m+[m[32m            end[m
+[32m+[m[32m        end[m
+[32m+[m[32m        if esIgual then[m[41m [m
+[32m+[m[32m            return esIgual, macro, index[m
+[32m+[m[32m        end[m
+[32m+[m[32m    end[m
+[32m+[m[32m    return false, nil, nil[m
+[32m+[m[32mend[m
+[32m+[m
+[32m+[m[32mfunction CargarMacros()[m
+[32m+[m
+[32m+[m[32m    if global_data.list_macro == nil then[m
+[32m+[m[32m        global_data.list_macro = {}[m
+[32m+[m[32m    end[m
+[32m+[m
+[32m+[m[32m    local macros = global_data.list_macro[m
+[32m+[m
+[32m+[m[32m    for _, macro in ipairs(macros) do[m
+[32m+[m[32m        CreateMacro(macro)[m
+[32m+[m[32m    end[m
+[32m+[m[32m    sendConsoleMessageSamp("Se cargaron " .. #macros .. " macros.")[m
+[32m+[m
+[32m+[m[32mend[m
+[32m+[m
+[32m+[m[32mfunction CreateMacro(macro)[m
+[32m+[m[32m    _ = lua_thread.create(function()[m
+[32m+[m[41m        [m
+[32m+[m[32m        while true do[m
+[32m+[m[32m            wait(macro.timeWaitCmds)[m
+[32m+[m[41m    [m
+[32m+[m[32m            local comboPressed = vk.get_hotkey_pressed(macro.keys)[m
+[32m+[m[41m    [m
+[32m+[m[32m            local estado = isCharInAnyCar(PLAYER_PED)[m
+[32m+[m[41m    [m
+[32m+[m[32m            if comboPressed  and vConfig.macrosOn[0] and macro.enable then[m
+[32m+[m[41m           [m
+[32m+[m[32m                if macro.status == 0 then[m
+[32m+[m[32m                    EjecutarCmd(macro)[m
+[32m+[m[32m                elseif macro.status == 1 and estado then[m
+[32m+[m[32m                    EjecutarCmd(macro)[m
+[32m+[m[32m                elseif macro.status == 2 and not estado then[m[41m  [m
+[32m+[m[32m                    EjecutarCmd(macro)[m
+[32m+[m[32m                end[m
+[32m+[m[41m                [m
+[32m+[m[32m            end[m
+[32m+[m[32m        end[m
+[32m+[m[32m    end)[m
+[32m+[m[32mend[m
+[32m+[m
+[32m+[m[32mfunction EjecutarCmd(funt, consoleCmd)[m
+[32m+[m
+[32m+[m[32m    local chatActive = sampIsChatInputActive()[m
+[32m+[m[41m    [m
+[32m+[m[32m    if chatActive and not consoleCmd then return end[m
+[32m+[m
+[32m+[m[32m    for i, cmd in ipairs(funt.cmds) do[m
+[32m+[m[32m        sampSendChat(cmd)[m
+[32m+[m
+[32m+[m[32m        if( i < #funt.cmds) then[m
+[32m+[m[32m            wait(funt.timeWaitCmds)[m
+[32m+[m[32m        end[m
+[32m+[m[32m    end[m
+[32m+[m[32mend[m
+[32m+[m
+[32m+[m[32mfunction sendConsoleMessageSamp(msg)[m
+[32m+[m[32m    local index = string.format("{FFFFFF}[ {1FDADC}%s {FFFFFF}]: ", thisScript().name)[m
+[32m+[m[32m    sampAddChatMessage(index .. msg, 0xD6DADC)[m
+ end[m
+[1mdiff --git a/Assistant3000.lua.disabled b/Assistant3000.lua.disabled[m
+[1mnew file mode 100644[m
+[1mindex 0000000..12ce423[m
+[1m--- /dev/null[m
+[1m+++ b/Assistant3000.lua.disabled[m
+[36m@@ -0,0 +1,267 @@[m
+[32m+[m[32mscript_name('Asistente Samp')[m
+[32m+[m[32mscript_version('0.0.1')[m
+[32m+[m[32mscript_author('CryGeo')[m
+[32m+[m[32mscript_description('Puedes crear macros/acciones/funcione de muchos formas.')[m
+[32m+[m
+[32m+[m[32m[[ imgui defectuosa el tira error en el imputText callback != 0]][m
+[32m+[m
+[32m+[m[32mlocal imgui = require 'imgui'[m
+[32m+[m[32mlocal helpMet = require 'HelpMet'[m
+[32m+[m[32mlocal ffi = require 'ffi'[m
+[32m+[m[32mlocal vk = require 'keysC'[m
+[32m+[m
+[32m+[m[32mlocal URL = "config/macrosDef.json"[m
+[32m+[m
+[32m+[m[32mlocal vConfig = {[m
+[32m+[m[32m    visible = imgui.ImBool(false),[m
+[32m+[m[32m}[m
+[32m+[m
+[32m+[m[32mlocal vCrearMacro = {[m
+[32m+[m[32m    visible = imgui.ImBool(false),[m
+[32m+[m
+[32m+[m[32m    buttonText = "Grabar KeyHot",[m
+[32m+[m[32m    grabando = false,[m
+[32m+[m[32m    labelText = "",[m
+[32m+[m[41m    [m
+[32m+[m[32m    inputNameMacro = imgui.ImBuffer(1024),[m
+[32m+[m[32m    keysPress = {},[m
+[32m+[m[32m    inputTimeWaitCmd = imgui.ImInt(1000),[m
+[32m+[m[32m    inputCommands = imgui.ImBuffer(1024),[m
+[32m+[m[32m    status = imgui.ImInt(0),[m
+[32m+[m
+[32m+[m[32m}[m
+[32m+[m
+[32m+[m[32mlocal vError = {[m
+[32m+[m[32m    visible = imgui.ImBool(false),[m
+[32m+[m[32m}[m
+[32m+[m
+[32m+[m[32mlocal listas = {}[m
+[32m+[m
+[32m+[m[32mlocal thread_GrabarKey = lua_thread.create_suspended([m
+[32m+[m[32m        function()[m[41m [m
+[32m+[m
+[32m+[m[32m            vCrearMacro.buttonText = "Detener Grabacion"[m
+[32m+[m[32m            vCrearMacro.grabando = true[m
+[32m+[m[32m            vCrearMacro.keysPress = {}[m
+[32m+[m[32m            vCrearMacro.labelText = ""[m
+[32m+[m
+[32m+[m[32m            while (vCrearMacro.grabando) do[m[41m [m
+[32m+[m[32m                local key = vk.get_key_pressed()[m
+[32m+[m[32m                local insert = true[m
+[32m+[m
+[32m+[m[32m                if(key ~= nil and not helpMet.existe_en_lista(vCrearMacro.keysPress, key)) then[m
+[32m+[m[41m                    [m
+[32m+[m[32m                    if(key.category ~= vk.categorys.KeyAccion) then[m[41m [m

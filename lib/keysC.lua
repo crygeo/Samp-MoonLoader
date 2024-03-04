@@ -533,6 +533,29 @@ function keys.get_hotkey_pressed(keysM)
     end
 end
 
+function keys.is_key_pressed(keysM)
+    if #keysM == 1 then
+        if wasKeyPressed(keysM[1].value) and not keys.check_key_pressed_KeyAccion() then
+            return true
+        end
+    else
+        
+        local allPress = true
+    
+        for i, v in pairs(keysM) do
+            if i == #keysM then 
+                if not wasKeyPressed(v.value) then allPress = false end
+            else
+                if not isKeyDown(v.value) then allPress = false end
+            end
+        end
+    
+        if allPress then return true end
+    end
+    return false
+end
+
+
 function keys.check_key_pressed_KeyAccion()
     return (isKeyDown(keys.VK_LSHIFT) or 
    isKeyDown(keys.VK_RSHIFT) or 

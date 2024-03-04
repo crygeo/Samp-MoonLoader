@@ -69,7 +69,7 @@ function helpMet.split_lines(text)
     return lines
 end
 
-function helpMet.format_Commands(cmds)
+function helpMet.format_arrays(cmds)
     local result = ""
     for i, cmd in ipairs(cmds) do
         result = result .. cmd
@@ -78,6 +78,14 @@ function helpMet.format_Commands(cmds)
         end
     end
     return result
+end
+
+function helpMet.format_bool(bool)
+    if bool then
+        return "true"
+    else
+        return "false"
+    end
 end
 
 function helpMet.translate_movement_type(movementType)
