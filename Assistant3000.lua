@@ -722,7 +722,7 @@ function imgui.PrintParameter()
     for i, v in pairs(tabla) do
         --print(v)
         local tablanew = separarTexto(v)
-        imgui.Spacing() w
+        imgui.Spacing()
         for k, a in pairs(tablanew) do
 --            print("text " .. k .. ": \"" .. a:gsub("{", "") .. "\"")
             if a ~= "" then
