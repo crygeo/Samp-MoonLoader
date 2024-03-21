@@ -108,4 +108,20 @@ function helpMet.parse_int_bool(numer)
     return nil
 end
 
+function helpMet.contains(p1, list)
+	for k,v in ipairs(list) do 
+		if p1:lower():match(v) then return true end
+	end
+	return false 
+end
+
+function helpMet.eliminarEspaciosExtras(text)
+    local arr = {}
+    for line in text:gmatch("[^\r\n]+") do
+        local str = line:gsub("%s+", " "):gsub("^%s*(.-)%s*$", "%1")
+        table.insert(arr, str)
+    end
+    return table.concat(arr, "\n")
+end
+
 return helpMet

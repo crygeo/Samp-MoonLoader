@@ -10,9 +10,16 @@ local new = imgui.new
 local helpMet = require 'HelpMet'
 local ffi = require 'ffi'
 local vk = require 'keysC'
+local memory = require'memory'
+local encoding = require 'encoding'
+encoding.default = 'ISO-8859-1'
+local u8 = encoding.UTF8
 
-local URL = "config/macrosDef.json"
+local URL = "config/Assistant3000.json"
 local X, Y = getScreenResolution()
+
+local font_flag = require('moonloader').font_flag
+local my_font = renderCreateFont('Verdana', 12, font_flag.BOLD + font_flag.SHADOW)
 
 local vConfig = {
     visible = new.bool(false),
@@ -42,7 +49,7 @@ local vMacroCrud = {
 local vActionCrud = {
     visible = new.bool(false),
     name = "",
-    index = 0,
+    index = 0, 
 
     buttonText = "Grabar KeyHot",
     labelKeysActivate = "",
@@ -117,6 +124,15 @@ local vPopup = {
     }
 }
 
+local vInventory = {
+    visible = new.bool(false),
+    keyboardMove = new.bool(false),
+    title = "Inventario",
+    description = "{FFFFFF} Dinero: {00CC00}$30277{FFFFFF}\n Medicamentos: {00CC00}10{FFFFFF}\n Crack: {FF3300}5g{FFFFFF}.\n \n"
+
+    
+}
+
 local global_data = {}
 
 function main()
@@ -129,14 +145,17 @@ function main()
             macrosOn = true,
             accionesOn = true,
             subComandosOn = true,
+            servicesOn = true,
         }
     end
     
     vConfig.macrosOn = new.bool(global_data.settings.macrosOn)
     vConfig.accionesOn = new.bool(global_data.settings.accionesOn)
     vConfig.subComandosOn = new.bool(global_data.settings.subComandosOn)
+    vConfig.servicesOn = new.bool(global_data.settings.servicesOn)
 
     while not isSampAvailable() do wait(50) end
+    
     CargarCommandosGlobal()
     CargarMacros()
     CargarAction()
@@ -144,7 +163,214 @@ function main()
     
 end
 
+function carFind()
+    local result, posX, posY, posZ = getTargetBlipCoordinates()
+    if result then
+        sampAddChatMessage("X: " .. posX .. " | Y: " .. posY .. " | Z: " .. posZ, -1)
+    else
+        sampAddChatMessage("Marker not found", -1)
+    end
+end
 
+
+lua_thread.create(function()
+
+    local buscarEnable = false
+    local idCarBuscar = 0
+
+    while true do
+        if buscarEnable then
+
+            local isOn, micar2 = sampGetCarHandleBySampVehicleId(idCarBuscar)
+            if isOn then
+                local vehiculoX, vehiculoY, vehiculoZ = getCarCoordinates(micar2)
+                local playerX, playerY, playerZ = getCharCoordinates(PLAYER_PED)
+                local dista = calcularDistancia(vehiculoX, vehiculoY, vehiculoZ, playerX, playerY, playerZ)
+                renderFontDrawText(my_font, 'Distancia: ' .. dista ,  10, 470, 0xFFFFFFFF)
+            else
+                renderFontDrawText(my_font, 'Fuera de area.' ,  10, 470, 0xFFFFFFFF)
+            end
+        end
+        --dibujarRectanguloAlrededorDeVehiculo(micar2)
+        wait(0)
+    end
+end)
+
+function buscarCarro(arg)
+    print(arg)
+    if #arg == 0 then
+        buscarEnable = false
+    else
+        buscarEnable = true
+        idCarBuscar = tonumber(arg)
+    end
+end
+    
+function calcularDistancia(vehiculoX, vehiculoY, vehiculoZ, jugadorX, jugadorY, jugadorZ)
+
+    local distanciaX = vehiculoX - jugadorX
+    local distanciaY = vehiculoY - jugadorY
+
+    local distancia = math.sqrt(distanciaX^2 + distanciaY^2)
+    return math.floor(distancia * 100) / 100 -- Redondear al entero más cercano
+end
+
+function calculateAngle(A, B, C)
+    -- Calcular los cuadrados de las longitudes de los lados
+    local AB = {x = B.x - A.x, y = B.y - A.y}
+    local BC = {x = C.x - B.x, y = C.y - B.y}
+
+    local dotProduct = AB.x * BC.x + AB.y * BC.y
+    local magnitudeAB = math.sqrt(AB.x^2 + AB.y^2)
+    local magnitudeBC = math.sqrt(BC.x^2 + BC.y^2)
+
+    local cosTheta = dotProduct / (magnitudeAB * magnitudeBC)
+    local theta = math.acos(cosTheta)
+
+    return math.deg(theta)
+end
+
+function calculateAngleBetweenVectors(vectorA, vectorB, vectorC)
+    -- Calcular las longitudes de los lados del triángulo formado por los vectores
+    local lengthA = math.sqrt(vectorA.x^2 + vectorA.y^2 + vectorA.z^2)
+    local lengthB = math.sqrt(vectorB.x^2 + vectorB.y^2 + vectorB.z^2)
+    local lengthC = math.sqrt(vectorC.x^2 + vectorC.y^2 + vectorC.z^2)
+
+    -- Calcular los productos punto entre los vectores
+    local dotAB = vectorA.x * vectorB.x + vectorA.y * vectorB.y + vectorA.z * vectorB.z
+    local dotBC = vectorB.x * vectorC.x + vectorB.y * vectorC.y + vectorB.z * vectorC.z
+    local dotCA = vectorC.x * vectorA.x + vectorC.y * vectorA.y + vectorC.z * vectorA.z
+
+    -- Calcular los ángulos entre los vectores
+    local angleA = math.acos(dotBC / (lengthB * lengthC))
+    local angleB = math.acos(dotCA / (lengthC * lengthA))
+    local angleC = math.acos(dotAB / (lengthA * lengthB))
+
+    -- Convertir los ángulos de radianes a grados
+    angleA = math.deg(angleA)
+    angleB = math.deg(angleB)
+    angleC = math.deg(angleC)
+    return angleA, angleB, angleC
+end
+
+local tit = ""
+local str = ""
+local did
+local st
+
+function onReceiveRpc(id, bs)
+    --print("Id: " .. id)
+    --print("Bs: " .. bs)
+
+    --[ML] (script) Asistente Samp: Id: 61
+    --[ML] (script) Asistente Samp: Bs: 24637332
+	if id == 61 then 
+        did = raknetBitStreamReadInt16(bs) -- paquete
+        st =  raknetBitStreamReadInt8(bs) -- id
+		tit = raknetBitStreamReadString(bs, raknetBitStreamReadInt8(bs)) -- titulo
+        local btn1 = raknetBitStreamReadString(bs, raknetBitStreamReadInt8(bs))  --buton 1
+        local btn2 = raknetBitStreamReadString(bs, raknetBitStreamReadInt8(bs)) -- buton 2
+        str = raknetBitStreamDecodeString(bs, 4096) -- texto
+        
+        if(helpMet.contains(tit, global_data.services.inventario.title)) then
+            openViewInventario(tit, str)
+            return false
+        end
+	end
+end
+
+function openViewInventario(tit, str)
+    print("tit: " .. tit)
+    print("str: " .. str)
+
+    vInventory.description = str
+    vInventory.visible[0] = not vInventory.visible[0]
+
+    
+end
+
+local function send(p)
+	local bs = raknetNewBitStream()
+	raknetBitStreamWriteInt16(bs, did)
+	raknetBitStreamWriteInt8(bs, 1)
+	raknetBitStreamWriteInt16(bs, 0)
+	raknetBitStreamWriteInt8(bs, #p)
+	raknetBitStreamWriteString(bs, p)
+	raknetSendRpcEx(62, bs, 1, 9, 0, 0)
+	raknetDeleteBitStream(bs)
+	did = nil
+	tit = nil 
+	st = nil
+end
+
+addEventHandler('onWindowMessage', function(msg, wparam)
+    --print("msg: " .. msg)
+    --print("wparm: " .. wparam)
+
+    --[ML] (script) Asistente Samp: wparm: 73
+    --[ML] (script) Asistente Samp: msg: 258
+    --[ML] (script) Asistente Samp: wparm: 105
+    --[ML] (script) Asistente Samp: msg: 275
+	
+end)
+
+function dibujarRectanguloAlrededorDeVehiculo(car)
+    local vehiculoX, vehiculoY, vehiculoZ = getCarCoordinates(car)
+    local camaraX, camaraY, camaraZ = getActiveCameraPointAt()
+    local playerX, playerY, playerZ = getCharCoordinates(PLAYER_PED)
+
+    local vector1 = {
+        x = vehiculoX,
+        y = vehiculoY,
+        z = vehiculoZ
+    }
+
+    local vector2 = {
+        x = camaraX,
+        y = camaraY,
+        z = camaraZ
+    }
+
+    local vector3 = {
+        x = playerX,
+        y = playerY,
+        z = playerZ
+    }
+
+
+    local X, Y = getScreenResolution()
+
+
+    renderFontDrawText(my_font, camaraX,  10, 400, 0xFFFFFFFF)
+    renderFontDrawText(my_font, camaraY,  10, 420, 0xFFFFFFFF)
+    renderFontDrawText(my_font, camaraZ,  10, 440, 0xFFFFFFFF)
+    
+    local puntoCarX, puntoCarY = 500 , 300
+    local anchoRectangulo, altoRectangulo = 250, 150
+    local dista = calcularDistancia(vehiculoX, vehiculoY, vehiculoZ, playerX, playerY, playerZ)
+    local distb = calcularDistancia(playerX, playerY, playerZ, camaraX, camaraY, camaraZ)
+    local distc = calcularDistancia(camaraX, camaraY, camaraZ, vehiculoX, vehiculoY, vehiculoZ)
+    local angle1, angle2, angle3 = calculateAngleBetweenVectors(vector1, vector2, vector3)
+    local angle = calculateAngle(vector1, vector3, vector2)
+
+    renderFontDrawText(my_font, 'Distancia1: ' .. dista ,  10, 470, 0xFFFFFFFF)
+    renderFontDrawText(my_font, 'Distancia2: ' .. distb ,  10, 490, 0xFFFFFFFF)
+    renderFontDrawText(my_font, 'Distancia3: ' .. distc ,  10, 510, 0xFFFFFFFF)
+
+    renderFontDrawText(my_font, 'Angulo1 : ' .. angle1 ,  10, 550 , 0xFFFFFFFF)
+    renderFontDrawText(my_font, 'Angulo2 : ' .. angle2 ,  10, 570 , 0xFFFFFFFF)
+    renderFontDrawText(my_font, 'Angulo3 : ' .. angle3 ,  10, 590 , 0xFFFFFFFF)
+    renderFontDrawText(my_font, 'Angulo0 : ' .. angle ,  10, 610 , 0xFFFFFFFF)
+
+    -- Calcular las coordenadas del rectángulo
+    local x1 = ((X - camaraZ)/2) - (anchoRectangulo / 2) / dista
+    local y1 = ((Y - camaraZ)/2) - (altoRectangulo / 2) / dista
+    local x2 = anchoRectangulo / dista
+    local y2 = altoRectangulo / dista
+
+    -- Dibujar el rectángulo
+    renderDrawBoxWithBorder(x1, y1, x2, y2, 0xffff, 3, 0x90000000)
+end
 
 
 imgui.OnFrame( function() return vConfig.visible[0] end,
@@ -376,6 +602,152 @@ imgui.OnFrame( function() return vSubCommandCrud.visible[0] end ,
     end
 )
 
+imgui.OnFrame( function() return vInventory.visible[0] end, function (player)
+    local colorTitle = imgui.ImColorRGBA(255, 188, 5, 255)
+    local color1 = imgui.ImColorRGBA(183, 36, 45, 255)
+    player.HideCursor = true
+    imgui.SetNextWindowSize(imgui.ImVec2(200, 120), imgui.Cond.FirstUseEver)
+    imgui.Begin('##inventario', vInventory.visible, imgui.WindowFlags.NoResize + imgui.WindowFlags.NoTitleBar + imgui.WindowFlags.AlwaysAutoResize + (vInventory.keyboardMove[0] and 0 or imgui.WindowFlags.NoMove) )
+    imgui.TextMer(vInventory.title, 'center', 20, colorTitle)
+    imgui.Spacing()
+    imgui.Spacing()
+    imgui.PrintParameter()
+    --imgui.Text(helpMet.eliminarEspaciosExtras(vInventory.description))
+    imgui.SetCursorPosX(180)
+    
+    imgui.MarginY(20)
+    imgui.End()
+end) 
+
+local font = {}
+imgui.OnInitialize(function()
+    local glyph_ranges = imgui.GetIO().Fonts:GetGlyphRangesCyrillic()
+    local path = getFolderPath(0x14) .. '\\trebucbd.ttf'
+    imgui.GetIO().Fonts:Clear() -- Удаляем стандартный шрифт на 14
+    imgui.GetIO().Fonts:AddFontFromFileTTF(path, 14.0, nil, glyph_ranges) -- этот шрифт на 15 будет стандартным
+    -- дополнительные шриты:
+    font[10] = imgui.GetIO().Fonts:AddFontFromFileTTF(path, 10.0, nil, glyph_ranges)
+    font[11] = imgui.GetIO().Fonts:AddFontFromFileTTF(path, 11.0, nil, glyph_ranges)
+    font[12] = imgui.GetIO().Fonts:AddFontFromFileTTF(path, 12.0, nil, glyph_ranges)
+    font[13] = imgui.GetIO().Fonts:AddFontFromFileTTF(path, 13.0, nil, glyph_ranges)
+    font[14] = imgui.GetIO().Fonts:AddFontFromFileTTF(path, 14.0, nil, glyph_ranges)
+    font[15] = imgui.GetIO().Fonts:AddFontFromFileTTF(path, 15.0, nil, glyph_ranges)
+    font[16] = imgui.GetIO().Fonts:AddFontFromFileTTF(path, 16.0, nil, glyph_ranges)
+    font[17] = imgui.GetIO().Fonts:AddFontFromFileTTF(path, 17.0, nil, glyph_ranges)
+    font[18] = imgui.GetIO().Fonts:AddFontFromFileTTF(path, 18.0, nil, glyph_ranges)
+    font[19] = imgui.GetIO().Fonts:AddFontFromFileTTF(path, 19.0, nil, glyph_ranges)
+    font[20] = imgui.GetIO().Fonts:AddFontFromFileTTF(path, 20.0, nil, glyph_ranges)
+    font[21] = imgui.GetIO().Fonts:AddFontFromFileTTF(path, 21.0, nil, glyph_ranges)
+    font[22] = imgui.GetIO().Fonts:AddFontFromFileTTF(path, 22.0, nil, glyph_ranges)
+    font[23] = imgui.GetIO().Fonts:AddFontFromFileTTF(path, 13.0, nil, glyph_ranges)
+    font[24] = imgui.GetIO().Fonts:AddFontFromFileTTF(path, 24.0, nil, glyph_ranges)
+    font[25] = imgui.GetIO().Fonts:AddFontFromFileTTF(path, 25.0, nil, glyph_ranges)
+end)
+
+function imgui.TextMer(text, aling, size, color)
+
+    if size == nil or size == 0 then size = 14 end
+    if color == nil then color = imgui.ImColorRGBA(255, 255, 255, 255) end
+
+    imgui.PushFont(font[size])
+    imgui.PushStyleColor(imgui.Col.Text, color)
+
+    local width = imgui.GetWindowWidth()
+    local widthText = imgui.CalcTextSize(text).x
+    
+    if aling == 'center' then
+        imgui.SetCursorPosX((width - widthText) / 2)
+    elseif aling == 'right' then
+        imgui.SetCursorPosX(width - widthText)
+    elseif aling == 'left' then
+        imgui.SetCursorPosX(0)
+    end
+
+    imgui.Text(text)
+    imgui.PopFont()
+    imgui.PopStyleColor()
+end
+
+function separarTexto(inputString)
+    local result = {}
+
+    local section = ""
+    local insert = false
+    for char in inputString:gmatch(".") do
+        
+        if char == "{" then
+            table.insert( result, section)
+            section = char
+        elseif char == "}" then
+            table.insert( result, section .. char)
+            section = ""
+        else 
+            section = section .. char
+        end
+
+
+    end
+    table.insert( result, section)
+    return result
+end
+
+function verificarLlaves(texto)
+    local apertura = texto:gsub("[^{]", "")
+    local cierre = texto:gsub("[^}]", "")
+    return apertura == "{" and cierre == "}"
+end
+
+function imgui.ImColorHexToRGBA(hex)
+    hex = hex:gsub("#", "")
+    hex = hex:gsub("{", "")
+    hex = hex:gsub("}", "")
+
+    local r = tonumber(hex:sub(1, 2), 16) or 0
+    local g = tonumber(hex:sub(3, 4), 16) or 0
+    local b = tonumber(hex:sub(5, 6), 16) or 0
+    local a = tonumber(hex:sub(7, 8) or "FF", 16) or 255
+
+    r = r / 255
+    g = g / 255
+    b = b / 255
+    a = a / 255
+
+    return imgui.ImVec4(r, g, b, a)
+end
+
+function imgui.PrintParameter()
+
+    local tabla = helpMet.split_lines(vInventory.description)
+    local pop = false
+    for i, v in pairs(tabla) do
+        --print(v)
+        local tablanew = separarTexto(v)
+        imgui.Spacing() w
+        for k, a in pairs(tablanew) do
+--            print("text " .. k .. ": \"" .. a:gsub("{", "") .. "\"")
+            if a ~= "" then
+                if verificarLlaves(a) then
+                    local color = imgui.ImColorHexToRGBA(a)
+                    imgui.PushStyleColor(imgui.Col.Text, color)
+                    pop = true
+                else
+                    imgui.Text(u8:decode(a))
+                    imgui.SameLine()
+                end
+            end
+        end
+    end
+    
+    if pop then
+        imgui.PopStyleColor()
+    end
+    
+end
+
+function imgui.ImColorRGBA(r, g, b, a)
+    return imgui.ImVec4(r/255, g/255, b/255, a/255)
+end
+
 function viewPoputError()
     if vPopup.Error.visible[0] then
         imgui.OpenPopup("Error")
@@ -397,12 +769,18 @@ function imgui.MarginY(i)
     imgui.SetCursorPosY(y + i)
 end
 
+function imgui.MarginX(i)
+    local x = imgui.GetCursorPosX()
+    imgui.SetCursorPosX(x + i)
+end
+
 function CargarCommandosGlobal()
     sampRegisterChatCommand("as", function() vConfig.visible[0] = not vConfig.visible[0] end );
     sampRegisterChatCommand("vall", function() vAllviews.visible[0] = not vAllviews.visible[0] end );
     sampRegisterChatCommand("nm", function() newMacro() end );
     sampRegisterChatCommand("na", function() newAction() end );
     sampRegisterChatCommand("nsc", function() newSubCommand() end );
+    sampRegisterChatCommand("carFind", buscarCarro)
 end
 
 function crearVistaItemsMacros(macro, index)
