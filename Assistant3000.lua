@@ -1,81 +1,38 @@
 script_name('Asistente Samp')
 script_version('0.0.1')
 script_author('CryGeo')
-script_description('Puedes crear macros/acciones/funcione de muchos formas.')
+script_description('Puedes crear macros/acciones/funcione de muchas formas.')
+
+
+_G.HOTKEY_USADOS = {}
 
 local dkjson = require("lib/dkjson-master/dkjson")
 
-local imgui = require 'mimgui'
-local new = imgui.new
-local helpMet = require 'HelpMet'
+local imgui = require 'src/imple/mimgui'
+local helpMet = require("src/imple/helpMet")
+local vk = require 'src/imple/keysC'
 local ffi = require 'ffi'
-local vk = require 'keysC'
 local memory = require'memory'
 local encoding = require 'encoding'
-encoding.default = 'ISO-8859-1'
+
+local new = imgui.new
+
+encoding.default = 'iso-8859-1'
 local u8 = encoding.UTF8
 
-local URL = "config/Assistant3000.json"
-local X, Y = getScreenResolution()
+local URL = "src/data.json"
+
 
 local font_flag = require('moonloader').font_flag
 local my_font = renderCreateFont('Verdana', 12, font_flag.BOLD + font_flag.SHADOW)
 
-local vConfig = {
-    visible = new.bool(false),
-}
+local vConfig = require'src/view/vConfig'
+local vMacroCrud = require'src/view/vMacroCrud'
 
-local vAllviews = {
-    visible = new.bool(false),
-}
 
-local vMacroCrud = {
-    visible = new.bool(false),
-    name = "",
-    index = 0,
 
-    buttonText = "Grabar KeyHot",
-    grabando = false,
-    labelKeysActivate = "",
-    
-    inputNameMacro = new.char[64](),
-    keysActivate = {},
-    inputTimeWaitCmd = new.int(1000),
-    inputCommands = new.char[1024](),
-    status = new.int(0),
 
-}
 
-local vActionCrud = {
-    visible = new.bool(false),
-    name = "",
-    index = 0, 
-
-    buttonText = "Grabar KeyHot",
-    labelKeysActivate = "",
-    grabando = false,
-
-    inputNameAction = new.char[64](),
-    inputTextActivate = new.char[255](),
-    inputTextDesactivate = new.char[1024](),
-    inputCommands = new.char[1024](),
-    timeWaitCmds = new.int(1000),
-    timeWaitDesactivateAction = new.int(5000),
-    autoActivate = new.bool(true),
-    keysActivate = {}
-    
-}
-
-local vSubCommandCrud = {
-    visible = new.bool(false),
-    name = "",
-    index = 0,
-
-    inputName = new.char[64](),
-    inputCommand = new.char[64](),
-    inputCommands = new.char[1024](),
-    timeWaitCmds = new.int(1000),
-}
 
 thread_GrabarKey = lua_thread.create_suspended(
         function(modelo_v) 
@@ -111,37 +68,15 @@ thread_GrabarKey = lua_thread.create_suspended(
         end
 )
 
-local vPopup = {
-    Error = { 
-        visible = new.bool(false),
-        msg = ""
-    },
-    Delete = {
-        visible = new.bool(false),
-    },
-    KeyRepetido = {
-        visible = new.bool(false),
-    }
-}
-
-local vInventory = {
-    visible = new.bool(false),
-    keyboardMove = new.bool(false),
-    title = "Inventario",
-    description = "{FFFFFF} Dinero: {00CC00}$30277{FFFFFF}\n Medicamentos: {00CC00}10{FFFFFF}\n Crack: {FF3300}5g{FFFFFF}.\n \n"
-
-    
-}
-
-local global_data = {}
+_G.GLOBAL_DATA = {}
 
 function main()
     --cargar datos del json
-    global_data = helpMet.GetDataArchivo(URL)
+    GLOBAL_DATA = helpMet.GetDataArchivo(URL)
 
-    if global_data == nil then
-        global_data = {}
-        global_data.settings = {
+    if GLOBAL_DATA == nil then
+        GLOBAL_DATA = {}
+        GLOBAL_DATA.settings = {
             macrosOn = true,
             accionesOn = true,
             subComandosOn = true,
@@ -149,10 +84,7 @@ function main()
         }
     end
     
-    vConfig.macrosOn = new.bool(global_data.settings.macrosOn)
-    vConfig.accionesOn = new.bool(global_data.settings.accionesOn)
-    vConfig.subComandosOn = new.bool(global_data.settings.subComandosOn)
-    vConfig.servicesOn = new.bool(global_data.settings.servicesOn)
+    vConfig.CargarSettings(GLOBAL_DATA.settings)
 
     while not isSampAvailable() do wait(50) end
     
@@ -272,7 +204,7 @@ function onReceiveRpc(id, bs)
         local btn2 = raknetBitStreamReadString(bs, raknetBitStreamReadInt8(bs)) -- buton 2
         str = raknetBitStreamDecodeString(bs, 4096) -- texto
         
-        if(helpMet.contains(tit, global_data.services.inventario.title)) then
+        if(helpMet.contains(tit, GLOBAL_DATA.services.inventario.title)) then
             openViewInventario(tit, str)
             return false
         end
@@ -280,8 +212,6 @@ function onReceiveRpc(id, bs)
 end
 
 function openViewInventario(tit, str)
-    print("tit: " .. tit)
-    print("str: " .. str)
 
     vInventory.description = str
     vInventory.visible[0] = not vInventory.visible[0]
@@ -372,302 +302,6 @@ function dibujarRectanguloAlrededorDeVehiculo(car)
     renderDrawBoxWithBorder(x1, y1, x2, y2, 0xffff, 3, 0x90000000)
 end
 
-
-imgui.OnFrame( function() return vConfig.visible[0] end,
-    function()
-        imgui.SetNextWindowSize(imgui.ImVec2(194, 120), imgui.Cond.FirstUseEver)
-        imgui.SetNextWindowPos(imgui.ImVec2(X / 2, Y / 2), imgui.Cond.FirstUseEver, imgui.ImVec2(0.5, 0.5))
-        
-        imgui.Begin("Configuracion", vConfig.visible, imgui.WindowFlags.NoResize + imgui.WindowFlags.AlwaysAutoResize)
-        imgui.Text("Configuracion del procesos.")
-        if imgui.Checkbox("Macros On", vConfig.macrosOn) then
-            global_data.settings.macrosOn = vConfig.macrosOn[0]
-        end
-        if imgui.Checkbox("Acction On", vConfig.accionesOn) then
-            global_data.settings.accionesOn = vConfig.accionesOn[0]
-        end
-        if imgui.Checkbox("SubCommandos On", vConfig.subComandosOn) then
-            global_data.settings.subComandosOn = vConfig.subComandosOn[0]
-        end
-        imgui.Separator()
-        if imgui.Button("Crear Macro") then newMacro() end imgui.SameLine()
-        if imgui.Button("Crear Acction") then newAction() end imgui.SameLine()
-        if imgui.Button("Crear SubCommando") then newSubCommand() end imgui.Separator()
-        if imgui.Button("Ver All") then buttonAllView() end
-        imgui.End()
-    end
-)
-
-imgui.OnFrame( function() return vMacroCrud.visible[0] end, 
-    function()
-        imgui.SetNextWindowSize(imgui.ImVec2(194, 120), imgui.Cond.FirstUseEver)
-        imgui.SetNextWindowPos(imgui.ImVec2(X / 2, Y / 2), imgui.Cond.FirstUseEver, imgui.ImVec2(0.5, 0.5))
-        
-        imgui.Begin(vMacroCrud.name, vMacroCrud.visible, imgui.WindowFlags.NoResize + imgui.WindowFlags.AlwaysAutoResize)
-        
-        imgui.InputText('Name', vMacroCrud.inputNameMacro, 128)
-        if imgui.Button(vMacroCrud.buttonText) then 
-            
-            if not vMacroCrud.grabando then
-                thread_GrabarKey:run(vMacroCrud)
-            else
-                if thread_GrabarKey ~= nil then
-                    thread_GrabarKey:terminate(thread_GrabarKey)
-                end
-                vMacroCrud.labelKeysActivate = ""
-                vMacroCrud.keysActivate = {}
-                vMacroCrud.buttonText = "Grabar KeyHot"
-                vMacroCrud.grabando = false
-            end
-        end imgui.SameLine()
-        imgui.Text(vMacroCrud.labelKeysActivate)
-        imgui.InputInt("Time between commands ms", vMacroCrud.inputTimeWaitCmd, 1000, 1000)
-        imgui.InputTextMultiline("Commands", vMacroCrud.inputCommands, 0x400,  imgui.ImVec2(0, 100))
-        imgui.Separator()
-        imgui.Text("Estado de activicion del macro")
-        imgui.RadioButtonIntPtr("All", vMacroCrud.status, 0) imgui.SameLine()
-        imgui.RadioButtonIntPtr("In Car", vMacroCrud.status, 1) imgui.SameLine()
-        imgui.RadioButtonIntPtr("Walking", vMacroCrud.status, 2) 
-        imgui.SetCursorPosY(275)
-        imgui.Separator()
-        imgui.SetCursorPosX((imgui.GetWindowWidth() - imgui.CalcTextSize('Crear Macro').x - imgui.CalcTextSize('Cancelar').x)/2.2)
-        imgui.SetCursorPosY(290)
-        if imgui.Button("Aceptar") then
-            buttonAceptarViewMacro()
-        end
-        imgui.SameLine()
-        if imgui.Button("Cancelar") then
-            buttonCancelarViewMacro()
-        end
-
-        viewPoputError() -- Implementa la vista de error
-
-        if vPopup.KeyRepetido.visible[0] then
-            imgui.OpenPopup("HotKeyRepetido")
-        end
-        if imgui.BeginPopupModal("HotKeyRepetido", _, imgui.WindowFlags.NoResize) then
-            imgui.SetWindowSizeVec2(imgui.ImVec2(300, 140)) 
-            imgui.TextWrapped('La combinacion es igual al macro:')
-            imgui.Text(vPopup.KeyRepetido.macro.name)
-            imgui.TextWrapped('Aun desea agregar el macro?')
-            imgui.SetCursorPosY(90)
-            imgui.Separator()
-            imgui.SetCursorPosY(100)
-            imgui.SetCursorPosX(35)
-            if imgui.Button("Aceptar", imgui.ImVec2(110, 24)) then 
-                vPopup.KeyRepetido.visible[0] = false
-                vPopup.KeyRepetido.add = true
-                imgui.CloseCurrentPopup()
-            end
-            imgui.SameLine()
-            if imgui.Button("Cancelar", imgui.ImVec2(110, 24)) then 
-                vPopup.KeyRepetido.visible[0] = false
-                vPopup.KeyRepetido.add = false
-                imgui.CloseCurrentPopup()
-            end
-        end
-        imgui.End()
-    end
-)
-
-imgui.OnFrame( function() return vAllviews.visible[0] end,
-    function() 
-        imgui.SetNextWindowSize(imgui.ImVec2(300, 400), imgui.Cond.Always)
-        imgui.SetNextWindowPos(imgui.ImVec2( 50, 50), imgui.Cond.FirstUseEver, imgui.ImVec2(0,0))
-        imgui.Begin("Vista completa", vAllviews.visible, imgui.WindowFlags.NoResize + imgui.WindowFlags.AlwaysAutoResize)
-        if imgui.BeginTabBar("Tabs") then
-            if imgui.BeginTabItem("Macros") then
-                for index, macro in ipairs(global_data.list_macro) do
-                    crearVistaItemsMacros(macro, index)
-                end
-                imgui.EndTabItem()
-            end
-            if imgui.BeginTabItem("Acciones") then
-                for index, acction in ipairs(global_data.list_acction) do
-                    crearVistaItemsAction(acction, index)
-                end
-                imgui.EndTabItem()
-            end
-            if imgui.BeginTabItem("SubCommandos") then
-                for index, subcmd in ipairs(global_data.list_subcommand) do
-                    crearVistaItemsSubCommand(subcmd, index)
-                end
-                imgui.EndTabItem()
-            end
-        end
-        
-        if vPopup.Delete.visible[0] then
-            imgui.OpenPopup("Delete")
-        end
-        if imgui.BeginPopupModal("Delete", _, imgui.WindowFlags.NoResize) then
-            imgui.SetWindowSizeVec2(imgui.ImVec2(250, 100))
-            imgui.TextWrapped('Seguro que quieres elimar el macro.')
-            imgui.SetCursorPosY(55)
-            imgui.Separator()
-            imgui.SetCursorPosY(65)
-            if imgui.Button("Aceptar", imgui.ImVec2(110, 24)) then 
-                vPopup.Delete.visible[0] = false
-                vPopup.Delete.remove = true
-                imgui.CloseCurrentPopup()
-            end
-            imgui.SameLine()
-            if imgui.Button("Cancelar", imgui.ImVec2(110, 24)) then
-                vPopup.Delete.visible[0] = false
-                vPopup.Delete.remove = false
-                imgui.CloseCurrentPopup()
-            end
-        end
-        
-    end
-)
-
-imgui.OnFrame( function() return vActionCrud.visible[0] end,
-    function() 
-        local x, y = nil
-        imgui.SetNextWindowPos(imgui.ImVec2( 50, 50), imgui.Cond.FirstUseEver, imgui.ImVec2(0,0))
-        imgui.GetStyle().WindowPadding = imgui.ImVec2(15, 15)
-        imgui.Begin(vActionCrud.name, vActionCrud.visible, imgui.WindowFlags.NoResize + imgui.WindowFlags.AlwaysAutoResize)
-            imgui.InputText(" Name", vActionCrud.inputNameAction, 64)
-            imgui.InputText(" Text for activate", vActionCrud.inputTextActivate, 255)
-            imgui.InputTextMultiline(" Commands", vActionCrud.inputCommands, 1024)
-            imgui.InputInt(" Time wait to activete command", vActionCrud.timeWaitCmds, 1000, 1000)
-            imgui.Checkbox(" Auto Activar", vActionCrud.autoActivate)
-            
-            if not vActionCrud.autoActivate[0] then
-                imgui.MarginY(10)
-                if imgui.BeginChild('Name', imgui.ImVec2(520, 200), true) then
-                    if imgui.Button(vActionCrud.buttonText) then
-                        if not vActionCrud.grabando then
-                            thread_GrabarKey:run(vActionCrud)
-                        else
-                            if thread_GrabarKey ~= nil then
-                                thread_GrabarKey:terminate(thread_GrabarKey)
-                            end
-                            vActionCrud.labelKeysActivate = ""
-                            vActionCrud.keysActivate = {}
-                            vActionCrud.buttonText = "Grabar KeyHot"
-                            vActionCrud.grabando = false
-                        end
-                    end
-                    imgui.SameLine()
-                    imgui.Text(vActionCrud.labelKeysActivate)
-                    imgui.InputTextMultiline(" Text for desactivate", vActionCrud.inputTextDesactivate, 1024)
-                    imgui.InputInt(" Time for auto desactivate", vActionCrud.timeWaitDesactivateAction, 1000,1000)
-                end
-                imgui.EndChild()
-            else
-                vActionCrud.labelKeysActivate = ""
-                vActionCrud.keysActivate = {}
-                vActionCrud.timeWaitDesactivateAction[0] = 5000
-            end
-            imgui.MarginY(10)
-            imgui.Separator()
-            imgui.SetCursorPosX(100)
-            imgui.MarginY(10)
-            if imgui.Button("Aceptar", imgui.ImVec2(100, 24)) then
-                buttonAceptarViewAction()
-            end
-            imgui.SameLine()
-            imgui.SetCursorPosX(250)
-            if imgui.Button("Cancelar", imgui.ImVec2(100, 24)) then
-                buttonCancelarViewAction()
-            end
-            viewPoputError() -- Implementa la vista de error
-            imgui.End()
-    end
-)
-
-imgui.OnFrame( function() return vSubCommandCrud.visible[0] end ,
-    function() 
-        imgui.SetNextWindowPos(imgui.ImVec2( 50, 50), imgui.Cond.FirstUseEver, imgui.ImVec2(0,0))
-        imgui.Begin(vSubCommandCrud.name, vSubCommandCrud.visible, imgui.WindowFlags.NoResize + imgui.WindowFlags.AlwaysAutoResize)
-            imgui.InputText("Name", vSubCommandCrud.inputName, 64)
-            imgui.InputText("Command active", vSubCommandCrud.inputCommand, 64)
-            imgui.InputTextMultiline("Commands", vSubCommandCrud.inputCommands, 1024)
-            imgui.InputInt(" Time wait to activete command", vSubCommandCrud.timeWaitCmds, 1000, 1000)
-            imgui.MarginY(10)
-            imgui.Separator()
-            imgui.SetCursorPosX(100)
-            imgui.MarginY(10)
-            if imgui.Button("Aceptar", imgui.ImVec2(100, 24)) then
-                buttonAceptarSubCommand()
-            end
-            imgui.SameLine()
-            imgui.SetCursorPosX(250)
-            if imgui.Button("Cancelar", imgui.ImVec2(100, 24)) then
-                buttonCancelarSubCommand()
-            end
-            viewPoputError()
-        imgui.End()
-    end
-)
-
-imgui.OnFrame( function() return vInventory.visible[0] end, function (player)
-    local colorTitle = imgui.ImColorRGBA(255, 188, 5, 255)
-    local color1 = imgui.ImColorRGBA(183, 36, 45, 255)
-    player.HideCursor = true
-    imgui.SetNextWindowSize(imgui.ImVec2(200, 120), imgui.Cond.FirstUseEver)
-    imgui.Begin('##inventario', vInventory.visible, imgui.WindowFlags.NoResize + imgui.WindowFlags.NoTitleBar + imgui.WindowFlags.AlwaysAutoResize + (vInventory.keyboardMove[0] and 0 or imgui.WindowFlags.NoMove) )
-    imgui.TextMer(vInventory.title, 'center', 20, colorTitle)
-    imgui.Spacing()
-    imgui.Spacing()
-    imgui.PrintParameter()
-    --imgui.Text(helpMet.eliminarEspaciosExtras(vInventory.description))
-    imgui.SetCursorPosX(180)
-    
-    imgui.MarginY(20)
-    imgui.End()
-end) 
-
-local font = {}
-imgui.OnInitialize(function()
-    local glyph_ranges = imgui.GetIO().Fonts:GetGlyphRangesCyrillic()
-    local path = getFolderPath(0x14) .. '\\trebucbd.ttf'
-    imgui.GetIO().Fonts:Clear() -- Удаляем стандартный шрифт на 14
-    imgui.GetIO().Fonts:AddFontFromFileTTF(path, 14.0, nil, glyph_ranges) -- этот шрифт на 15 будет стандартным
-    -- дополнительные шриты:
-    font[10] = imgui.GetIO().Fonts:AddFontFromFileTTF(path, 10.0, nil, glyph_ranges)
-    font[11] = imgui.GetIO().Fonts:AddFontFromFileTTF(path, 11.0, nil, glyph_ranges)
-    font[12] = imgui.GetIO().Fonts:AddFontFromFileTTF(path, 12.0, nil, glyph_ranges)
-    font[13] = imgui.GetIO().Fonts:AddFontFromFileTTF(path, 13.0, nil, glyph_ranges)
-    font[14] = imgui.GetIO().Fonts:AddFontFromFileTTF(path, 14.0, nil, glyph_ranges)
-    font[15] = imgui.GetIO().Fonts:AddFontFromFileTTF(path, 15.0, nil, glyph_ranges)
-    font[16] = imgui.GetIO().Fonts:AddFontFromFileTTF(path, 16.0, nil, glyph_ranges)
-    font[17] = imgui.GetIO().Fonts:AddFontFromFileTTF(path, 17.0, nil, glyph_ranges)
-    font[18] = imgui.GetIO().Fonts:AddFontFromFileTTF(path, 18.0, nil, glyph_ranges)
-    font[19] = imgui.GetIO().Fonts:AddFontFromFileTTF(path, 19.0, nil, glyph_ranges)
-    font[20] = imgui.GetIO().Fonts:AddFontFromFileTTF(path, 20.0, nil, glyph_ranges)
-    font[21] = imgui.GetIO().Fonts:AddFontFromFileTTF(path, 21.0, nil, glyph_ranges)
-    font[22] = imgui.GetIO().Fonts:AddFontFromFileTTF(path, 22.0, nil, glyph_ranges)
-    font[23] = imgui.GetIO().Fonts:AddFontFromFileTTF(path, 13.0, nil, glyph_ranges)
-    font[24] = imgui.GetIO().Fonts:AddFontFromFileTTF(path, 24.0, nil, glyph_ranges)
-    font[25] = imgui.GetIO().Fonts:AddFontFromFileTTF(path, 25.0, nil, glyph_ranges)
-end)
-
-function imgui.TextMer(text, aling, size, color)
-
-    if size == nil or size == 0 then size = 14 end
-    if color == nil then color = imgui.ImColorRGBA(255, 255, 255, 255) end
-
-    imgui.PushFont(font[size])
-    imgui.PushStyleColor(imgui.Col.Text, color)
-
-    local width = imgui.GetWindowWidth()
-    local widthText = imgui.CalcTextSize(text).x
-    
-    if aling == 'center' then
-        imgui.SetCursorPosX((width - widthText) / 2)
-    elseif aling == 'right' then
-        imgui.SetCursorPosX(width - widthText)
-    elseif aling == 'left' then
-        imgui.SetCursorPosX(0)
-    end
-
-    imgui.Text(text)
-    imgui.PopFont()
-    imgui.PopStyleColor()
-end
-
 function separarTexto(inputString)
     local result = {}
 
@@ -685,7 +319,6 @@ function separarTexto(inputString)
             section = section .. char
         end
 
-
     end
     table.insert( result, section)
     return result
@@ -697,45 +330,39 @@ function verificarLlaves(texto)
     return apertura == "{" and cierre == "}"
 end
 
-function imgui.ImColorHexToRGBA(hex)
-    hex = hex:gsub("#", "")
-    hex = hex:gsub("{", "")
-    hex = hex:gsub("}", "")
-
-    local r = tonumber(hex:sub(1, 2), 16) or 0
-    local g = tonumber(hex:sub(3, 4), 16) or 0
-    local b = tonumber(hex:sub(5, 6), 16) or 0
-    local a = tonumber(hex:sub(7, 8) or "FF", 16) or 255
-
-    r = r / 255
-    g = g / 255
-    b = b / 255
-    a = a / 255
-
-    return imgui.ImVec4(r, g, b, a)
-end
-
-function imgui.PrintParameter()
+function PrintParameter()
 
     local tabla = helpMet.split_lines(vInventory.description)
     local pop = false
     for i, v in pairs(tabla) do
-        --print(v)
         local tablanew = separarTexto(v)
         imgui.Spacing()
-        for k, a in pairs(tablanew) do
---            print("text " .. k .. ": \"" .. a:gsub("{", "") .. "\"")
-            if a ~= "" then
-                if verificarLlaves(a) then
-                    local color = imgui.ImColorHexToRGBA(a)
-                    imgui.PushStyleColor(imgui.Col.Text, color)
-                    pop = true
-                else
-                    imgui.Text(u8:decode(a))
-                    imgui.SameLine()
+        
+        if v == "" then
+            imgui.MarginY(20)
+        else
+            local canText = 0
+            for k, a in pairs(tablanew) do
+                if a ~= "" then
+                    if verificarLlaves(a) then
+                        local color = imgui.ImColorHex(a)
+                        imgui.PushStyleColor(imgui.Col.Text, color)
+                        pop = true
+                    else
+                        canText = canText + 1
+                        if canText > 1 then
+                            imgui.MarginX(-7)
+                        end
+
+                        print(ffi.string(a))
+
+                        imgui.Text(u8(ffi.string(a)))
+                        imgui.SameLine()
+                    end
                 end
             end
         end
+
     end
     
     if pop then
@@ -744,43 +371,22 @@ function imgui.PrintParameter()
     
 end
 
-function imgui.ImColorRGBA(r, g, b, a)
-    return imgui.ImVec4(r/255, g/255, b/255, a/255)
-end
-
-function viewPoputError()
-    if vPopup.Error.visible[0] then
-        imgui.OpenPopup("Error")
-    end
-    if imgui.BeginPopupModal("Error", _, imgui.WindowFlags.NoResize) then
-        imgui.Text(vPopup.Error.msg)
-        imgui.SetCursorPosY(45 + imgui.CalcTextSize(vPopup.Error.msg).y)
-        imgui.Separator()
-        imgui.SetCursorPosY(55 + imgui.CalcTextSize(vPopup.Error.msg).y)
-        if imgui.Button("Aceptar", imgui.ImVec2(250, 24)) then
-            vPopup.Error.visible[0] = false
-            imgui.CloseCurrentPopup()
-        end
-    end
-end
-
-function imgui.MarginY(i)
-    local y = imgui.GetCursorPosY()
-    imgui.SetCursorPosY(y + i)
-end
-
-function imgui.MarginX(i)
-    local x = imgui.GetCursorPosX()
-    imgui.SetCursorPosX(x + i)
-end
+script.terminate = function() SaveData() end
 
 function CargarCommandosGlobal()
-    sampRegisterChatCommand("as", function() vConfig.visible[0] = not vConfig.visible[0] end );
-    sampRegisterChatCommand("vall", function() vAllviews.visible[0] = not vAllviews.visible[0] end );
-    sampRegisterChatCommand("nm", function() newMacro() end );
-    sampRegisterChatCommand("na", function() newAction() end );
-    sampRegisterChatCommand("nsc", function() newSubCommand() end );
+    NewChatCommand("as", "Abre la ventana de configuracion.", vConfig.OpenOrCloseView);
+    NewChatCommand("nm", "Crea nuevo macro.", CrearNuevoMacro);
+    
+
+    sampRegisterChatCommand("vall", buttonOpenViewAll );
+    sampRegisterChatCommand("na", buttonNewAction );
+    sampRegisterChatCommand("nsc", buttonNewSubCommand );
     sampRegisterChatCommand("carFind", buscarCarro)
+end
+
+function NewChatCommand(cmd, description, fun)
+    sampRegisterChatCommand(cmd, fun, description, description);
+    sampSetClientCommandDescription(cmd, description);
 end
 
 function crearVistaItemsMacros(macro, index)
@@ -913,7 +519,7 @@ function EliminarMacro(macro, index)
     _ = lua_thread.create(function ()
         while vPopup.Delete.visible[0] do wait(50) end
         if vPopup.Delete.remove then
-            table.remove(global_data.list_macro, vPopup.Delete.index)
+            table.remove(GLOBAL_DATA.list_macro, vPopup.Delete.index)
             SaveData()
         end
     end)
@@ -925,7 +531,7 @@ function EliminarAction(action, index)
     _ = lua_thread.create(function ()
         while vPopup.Delete.visible[0] do wait(50) end
         if vPopup.Delete.remove then
-            table.remove(global_data.list_acction, vPopup.Delete.index)
+            table.remove(GLOBAL_DATA.list_acction, vPopup.Delete.index)
             SaveData();
         end
     end)
@@ -937,7 +543,7 @@ function EliminarSubCommand(subcmd, index)
     _ = lua_thread.create(function ()
         while vPopup.Delete.visible[0] do wait(50) end
         if vPopup.Delete.remove then
-            table.remove(global_data.list_subcommand, vPopup.Delete.index)
+            table.remove(GLOBAL_DATA.list_subcommand, vPopup.Delete.index)
             SaveData();
         end
     end)
@@ -947,12 +553,7 @@ function EditarMacro(macro, index)
     vMacroCrud.visible[0] = true
     vMacroCrud.index = index
     vMacroCrud.name = "Editar Macro"
-    vMacroCrud.labelKeysActivate = vk.parse_array_keys_from_string(macro.keysActivate)
-    vMacroCrud.inputNameMacro = new.char[64](macro.name)
-    vMacroCrud.inputTimeWaitCmd[0] = macro.timeWaitCmds
-    vMacroCrud.keysActivate = macro.keysActivate
-    vMacroCrud.inputCommands = new.char[1024](helpMet.format_arrays(macro.commands))
-    vMacroCrud.status[0] = macro.status
+    
 
 end
 
@@ -989,20 +590,16 @@ function EditarSubCommand(subcmd, index)
 end
 
 
-function buttonAllView()
+function vConfig.buttonAllView()
     vAllviews.visible[0] = true
     vConfig.visible[0] = false
 end
 
-function newMacro()
-    if vMacroCrud.visible[0] ~= true then 
-        vMacroCrud.visible[0] = true
-        vMacroCrud.name = "Nuevo Macro"
-        limpiarViewMacro()
-    end
+function vConfig.buttonNewMacro()
+    vMacroCrud.NewMacro()
 end
 
-function newAction()
+function vConfig.buttonNewAction()
     if vActionCrud.visible[0] ~= true then 
         vActionCrud.visible[0] = true 
         vActionCrud.name = "Nuevo Acction"
@@ -1010,7 +607,7 @@ function newAction()
     end
 end
 
-function newSubCommand()
+function vConfig.buttonNewSubCommand()
     if vSubCommandCrud.visible[0] ~= true then 
         vSubCommandCrud.visible[0] = true 
         vSubCommandCrud.name = "Nuevo SubCommand"
@@ -1018,16 +615,14 @@ function newSubCommand()
     end
 end
 
-function limpiarViewMacro()
-    vMacroCrud.inputNameMacro = new.char[64]()
-    vMacroCrud.keysActivate = {}
-    vMacroCrud.inputTimeWaitCmd[0] = 1000
-    vMacroCrud.inputCommands = new.char[1024]()
-    vMacroCrud.status[0] = 0
-    vMacroCrud.labelKeysActivate = new.char[1024]()
-    vMacroCrud.index = 0
-    
+function CrearNuevoMacro()
+    lua_thread.create(function ()
+        local nMacro = vMacroCrud.NewMacro()
+        print(nMacro.name)
+    end)
 end
+
+
 
 function limpiarViewAction()
     vActionCrud.keysActivate = {}
@@ -1083,15 +678,15 @@ function buttonAceptarViewMacro()
         
         function addDatos()
             if (vMacroCrud.index == 0 ) then
-                table.insert(global_data.list_macro, macro)
+                table.insert(GLOBAL_DATA.list_macro, macro)
                 CreateMacro(macro)
             else
-                global_data.list_macro[vMacroCrud.index].name = macro.name
-                global_data.list_macro[vMacroCrud.index].keysActivate = macro.keysActivate
-                global_data.list_macro[vMacroCrud.index].timeWaitCmds = macro.timeWaitCmds
-                global_data.list_macro[vMacroCrud.index].commands = macro.commands
-                global_data.list_macro[vMacroCrud.index].status = macro.status
-                global_data.list_macro[vMacroCrud.index].enable = macro.enable
+                GLOBAL_DATA.list_macro[vMacroCrud.index].name = macro.name
+                GLOBAL_DATA.list_macro[vMacroCrud.index].keysActivate = macro.keysActivate
+                GLOBAL_DATA.list_macro[vMacroCrud.index].timeWaitCmds = macro.timeWaitCmds
+                GLOBAL_DATA.list_macro[vMacroCrud.index].commands = macro.commands
+                GLOBAL_DATA.list_macro[vMacroCrud.index].status = macro.status
+                GLOBAL_DATA.list_macro[vMacroCrud.index].enable = macro.enable
             end
 
             limpiarViewMacro()
@@ -1157,19 +752,19 @@ function buttonAceptarViewAction()
         function addDatos()
             local index = vActionCrud.index
             if (index == 0 ) then
-                table.insert(global_data.list_acction, acction)
+                table.insert(GLOBAL_DATA.list_acction, acction)
                 -- Funcion para activar la accíon
                 CreateAccion(acction);
             else
-                global_data.list_acction[index].enable = acction.enable
-                global_data.list_acction[index].name = acction.name
-                global_data.list_acction[index].textActive = acction.textActive
-                global_data.list_acction[index].textDesactive = acction.textDesactive
-                global_data.list_acction[index].commands = acction.commands
-                global_data.list_acction[index].timeWaitCmds = acction.timeWaitCmds
-                global_data.list_acction[index].timeWaitDesactivateAction = acction.timeWaitDesactivateAction
-                global_data.list_acction[index].autoActivate = acction.autoActivate
-                global_data.list_acction[index].keysActivate = acction.keysActivate
+                GLOBAL_DATA.list_acction[index].enable = acction.enable
+                GLOBAL_DATA.list_acction[index].name = acction.name
+                GLOBAL_DATA.list_acction[index].textActive = acction.textActive
+                GLOBAL_DATA.list_acction[index].textDesactive = acction.textDesactive
+                GLOBAL_DATA.list_acction[index].commands = acction.commands
+                GLOBAL_DATA.list_acction[index].timeWaitCmds = acction.timeWaitCmds
+                GLOBAL_DATA.list_acction[index].timeWaitDesactivateAction = acction.timeWaitDesactivateAction
+                GLOBAL_DATA.list_acction[index].autoActivate = acction.autoActivate
+                GLOBAL_DATA.list_acction[index].keysActivate = acction.keysActivate
             end
 
             limpiarViewAction()
@@ -1208,13 +803,13 @@ function buttonAceptarSubCommand()
         function addDatos()
             local index = vSubCommandCrud.index
             if (index == 0 ) then
-                table.insert(global_data.list_subcommand, subCmd)
+                table.insert(GLOBAL_DATA.list_subcommand, subCmd)
             else
-                sampUnregisterChatCommand(global_data.list_subcommand[index].command)
-                global_data.list_subcommand[index].enable = subCmd.enable
-                global_data.list_subcommand[index].name = subCmd.name
-                global_data.list_subcommand[index].command = subCmd.command
-                global_data.list_subcommand[index].commands = subCmd.commands
+                sampUnregisterChatCommand(GLOBAL_DATA.list_subcommand[index].command)
+                GLOBAL_DATA.list_subcommand[index].enable = subCmd.enable
+                GLOBAL_DATA.list_subcommand[index].name = subCmd.name
+                GLOBAL_DATA.list_subcommand[index].command = subCmd.command
+                GLOBAL_DATA.list_subcommand[index].commands = subCmd.commands
             end
             
             -- Funcion para activar sub-command
@@ -1244,7 +839,7 @@ function buttonCancelarSubCommand()
 end
 
 function verificar_SubCommand_existed(subCommand, index)
-    for k, v in ipairs(global_data.list_subcommand) do
+    for k, v in ipairs(GLOBAL_DATA.list_subcommand) do
         if v.command == subCommand.command and index ~= k then
             return true
         end
@@ -1253,7 +848,7 @@ function verificar_SubCommand_existed(subCommand, index)
 end
 
 function verificar_keys_existed(keysComparter)
-    for index, macro in pairs(global_data.list_macro) do
+    for index, macro in pairs(GLOBAL_DATA.list_macro) do
         local esIgual = false
         for i, tecla in ipairs(macro.keysActivate) do
             if keysComparter[i] ~= nil then
@@ -1270,11 +865,11 @@ function verificar_keys_existed(keysComparter)
 end
 
 function CargarAction()
-    if global_data.list_acction == nil then
-        global_data.list_acction = {}
+    if GLOBAL_DATA.list_acction == nil then
+        GLOBAL_DATA.list_acction = {}
     end
 
-    local acciones = global_data.list_acction
+    local acciones = GLOBAL_DATA.list_acction
     for _, accion in ipairs(acciones) do
         CreateAccion(accion)
     end
@@ -1295,7 +890,7 @@ function CreateAccion(accion)
 end
 
 function ActivarAccion(accion)
-    if accion.enable and global_data.settings.accionesOn then
+    if accion.enable and vConfig.accionesOn[0] then
         if accion.autoActivate then
             EjecutarCmd(accion)
         else
@@ -1328,11 +923,11 @@ end
 
 function CargarMacros()
 
-    if global_data.list_macro == nil then
-        global_data.list_macro = {}
+    if GLOBAL_DATA.list_macro == nil then
+        GLOBAL_DATA.list_macro = {}
     end
 
-    local macros = global_data.list_macro
+    local macros = GLOBAL_DATA.list_macro
 
     for _, macro in ipairs(macros) do
         CreateMacro(macro)
@@ -1343,11 +938,11 @@ end
 
 function CargarSubCommand()
 
-    if global_data.list_subcommand == nil then
-        global_data.list_subcommand = {}
+    if GLOBAL_DATA.list_subcommand == nil then
+        GLOBAL_DATA.list_subcommand = {}
     end
 
-    local subcmds = global_data.list_subcommand
+    local subcmds = GLOBAL_DATA.list_subcommand
 
     for _, subcmd in ipairs(subcmds) do
         CrearSubCommand(subcmd)
@@ -1365,7 +960,7 @@ function CreateMacro(macro)
             
             local estado = isCharInAnyCar(PLAYER_PED)
             
-            if comboPressed  and global_data.settings.macrosOn and macro.enable and not vMacroCrud.visible[0] then
+            if comboPressed  and GLOBAL_DATA.settings.macrosOn and macro.enable and not vMacroCrud.IsVisible() then
                 
                 if macro.status == 0 then
                     EjecutarCmd(macro)
@@ -1395,35 +990,7 @@ function CrearSubCommand(subcommad)
     )
 end
 
-function EjecutarCmd(funt, consoleCmd)
 
-    local chatActive = sampIsChatInputActive()
-    
-    if chatActive and consoleCmd ~= true then return  end
-
-    for i, cmd in ipairs(funt.commands) do
-        local isCmd, value = obtenerValorDesdeLlaves(cmd)
-
-        if isCmd then
-            sampSendChat(value)
-        else
-            wait(value)
-        end
-
-    end
-end
-
-function obtenerValorDesdeLlaves(texto)
-    -- Buscar el patrón de llaves con un número dentro
-    local patron = "{(%d+)}"
-    local valor = texto:match(patron) -- Buscar el primer valor que coincida con el patrón
-
-    if valor then
-        return false, tonumber(valor) -- Convertir el valor encontrado a número y devolverlo
-    else
-        return true, texto -- Devolver nil si no se encontró ningún valor dentro de las llaves
-    end
-end
 
 function sendConsoleMessageSamp(msg)
     local index = string.format("{FFFFFF}[ {1FDADC}%s {FFFFFF}]: ", thisScript().name)
@@ -1502,5 +1069,8 @@ function cleanAndLower(text)
 end
 
 function SaveData()
-    helpMet.SaveDataJson(URL, global_data)
+    helpMet.SaveDataJson(URL, GLOBAL_DATA)
+    print("Finished saving")
 end
+
+return model

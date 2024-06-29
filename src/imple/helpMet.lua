@@ -76,7 +76,9 @@ function helpMet.split_lines(text)
         end
         
     end
-    
+    if word ~= "" or #lines ~= 0 then
+        table.insert(lines, word)
+    end
     return lines
 end
 
@@ -111,7 +113,6 @@ function helpMet.translate_movement_type(movementType)
     end
 end
 
-
 function helpMet.parse_int_bool(numer)
     if numer == 0 then return nil end
     if numer == 1 then return true end
@@ -134,5 +135,34 @@ function helpMet.eliminarEspaciosExtras(text)
     end
     return table.concat(arr, "\n")
 end
+
+function helpMet.RunCommands(funt)
+
+    if sampIsChatInputActive() == true then return  end
+
+    for i, cmd in ipairs(funt.commands) do
+        local isCmd, value = helpMet.obtenerValorDesdeLlaves(cmd)
+
+        if isCmd then
+            sampSendChat(u8:decode(value))
+        else
+            wait(value)
+        end
+
+    end
+end
+
+function helpMet.obtenerValorDesdeLlaves(texto)
+    -- Buscar el patrón de llaves con un número dentro
+    local patron = "{(%d+)}"
+    local valor = texto:match(patron) -- Buscar el primer valor que coincida con el patrón
+
+    if valor then
+        return false, tonumber(valor) -- Convertir el valor encontrado a número y devolverlo
+    else
+        return true, texto -- Devolver nil si no se encontró ningún valor dentro de las llaves
+    end
+end
+
 
 return helpMet

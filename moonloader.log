@@ -1,5 +1,5 @@
-[20:12:22.785710] (system)	Session started.
-[20:12:22.786710] (debug)	Module handle: 563C0000
+[21:48:37.119764] (system)	Session started.
+[21:48:37.120764] (debug)	Module handle: 5BD70000
 
 MoonLoader v.026.5-beta loaded.
 Developers: FYP, hnnssy, EvgeN 1137
@@ -7,141 +7,64 @@ Developers: FYP, hnnssy, EvgeN 1137
 Copyright (c) 2016, BlastHack Team
 http://blast.hk/moonloader/
 
-[20:12:22.786710] (info)	Working directory: E:\Programas\GTA San Andreas SampFuncs V2\moonloader
-[20:12:22.786710] (debug)	FP Control: 0009001F
-[20:12:22.786710] (debug)	Game: GTA SA 1.0.0.0 US
-[20:12:22.786710] (system)	Installing pre-game hooks...
-[20:12:22.787711] (system)	Hooks installed.
-[20:12:26.586481] (debug)	Initializing opcode handler table
-[20:12:26.586481] (debug)	package.path = E:\Programas\GTA San Andreas SampFuncs V2\moonloader\lib\?.lua;E:\Programas\GTA San Andreas SampFuncs V2\moonloader\lib\?\init.lua;E:\Programas\GTA San Andreas SampFuncs V2\moonloader\?.lua;E:\Programas\GTA San Andreas SampFuncs V2\moonloader\?\init.lua;.\?.lua;E:\Programas\GTA San Andreas SampFuncs V2\moonloader\lib\?.luac;E:\Programas\GTA San Andreas SampFuncs V2\moonloader\lib\?\init.luac;E:\Programas\GTA San Andreas SampFuncs V2\moonloader\?.luac;E:\Programas\GTA San Andreas SampFuncs V2\moonloader\?\init.luac;.\?.luac
-[20:12:26.586481] (debug)	package.cpath = E:\Programas\GTA San Andreas SampFuncs V2\moonloader\lib\?.dll;
-[20:12:26.589482] (system)	Loading script 'E:\Programas\GTA San Andreas SampFuncs V2\moonloader\Assistant3000.lua'...
-[20:12:26.589482] (debug)	New script: 09C6B254
-[20:12:26.600484] (system)	Asistente Samp: Loaded successfully.
-[20:12:26.600484] (system)	Loading script 'E:\Programas\GTA San Andreas SampFuncs V2\moonloader\autominero_fz.luac'...
-[20:12:26.600484] (debug)	New script: 09C6AF44
-[20:12:26.610488] (system)	autominero_fz.luac: Loaded successfully.
-[20:12:26.611488] (system)	Loading script 'E:\Programas\GTA San Andreas SampFuncs V2\moonloader\AutoReboot.lua'...
-[20:12:26.611488] (debug)	New script: 09C6A614
-[20:12:26.611488] (system)	ML-AutoReboot: Loaded successfully.
-[20:12:26.612488] (system)	Loading script 'E:\Programas\GTA San Andreas SampFuncs V2\moonloader\Chat MImGui 7.0.lua'...
-[20:12:26.612488] (debug)	New script: 09C6A79C
-[20:12:26.619489] (system)	Chat MImGui: Loaded successfully.
-[20:12:26.620489] (system)	Loading script 'E:\Programas\GTA San Andreas SampFuncs V2\moonloader\Hora_y_Fecha.luac'...
-[20:12:26.620489] (debug)	New script: 09C6AAAC
-[20:12:26.638493] (system)	Hora_y_Fecha.luac: Loaded successfully.
-[20:12:26.638493] (system)	Loading script 'E:\Programas\GTA San Andreas SampFuncs V2\moonloader\Hud_Editor_by_Jose.luac'...
-[20:12:26.638493] (debug)	New script: 09C6A924
-[20:12:26.715510] (system)	Hud_Editor_by_Jose.luac: Loaded successfully.
-[20:12:26.715510] (system)	Loading script 'E:\Programas\GTA San Andreas SampFuncs V2\moonloader\keyboard.lua'...
-[20:12:26.715510] (debug)	New script: 09C6ADBC
-[20:12:26.720511] (system)	KeyBoard: Loaded successfully.
-[20:12:26.720511] (system)	Loading script 'E:\Programas\GTA San Andreas SampFuncs V2\moonloader\keyboard[3.0].lua'...
-[20:12:26.720511] (debug)	New script: 0D4DA424
-[20:12:26.720511] (error)	keyboard[3.0].lua: ...TA San Andreas SampFuncs V2\moonloader\keyboard[3.0].lua:141: 'end' expected (to close 'function' at line 139) near 'while'
-[20:12:26.720511] (error)	keyboard[3.0].lua: Script died due to an error. (0D4DA424)
-[20:12:26.720511] (system)	Loading script 'E:\Programas\GTA San Andreas SampFuncs V2\moonloader\reload_all.lua'...
-[20:12:26.720511] (debug)	New script: 0D4D9AF4
-[20:12:26.721512] (system)	ML-ReloadAll: Loaded successfully.
-[20:12:26.721512] (system)	Loading script 'E:\Programas\GTA San Andreas SampFuncs V2\moonloader\ScrollCameraControl.lua'...
-[20:12:26.721512] (debug)	New script: 0D4DAA44
-[20:12:26.723512] (system)	Scroll Camera Control: Loaded successfully.
-[20:12:26.723512] (system)	Loading script 'E:\Programas\GTA San Andreas SampFuncs V2\moonloader\SF Integration.lua'...
-[20:12:26.723512] (debug)	New script: 0D4DABCC
-[20:12:26.725513] (system)	SF Integration: Loaded successfully.
-[20:12:50.532138] (system)	Installing post-load hooks...
-[20:12:50.532138] (system)	Hooks installed.
-[20:12:51.412336] (script)	Chat MImGui: [WARNING] rewrote another hook
-[00:50:08.257277] (system)	Asistente Samp: Script terminated. (09C6B254)
-[00:50:08.259278] (system)	autominero_fz.luac: Script terminated. (09C6AF44)
-[00:50:08.260381] (system)	ML-AutoReboot: Script terminated. (09C6A614)
-[00:50:08.260381] (system)	Chat MImGui: Script terminated. (09C6A79C)
-[00:50:08.262372] (system)	Hora_y_Fecha.luac: Script terminated. (09C6AAAC)
-[00:50:08.264371] (system)	Hud_Editor_by_Jose.luac: Script terminated. (09C6A924)
-[00:50:08.265372] (system)	KeyBoard: Script terminated. (09C6ADBC)
-[00:50:08.266372] (system)	ML-ReloadAll: Script terminated. (0D4D9AF4)
-[00:50:08.266372] (system)	Scroll Camera Control: Script terminated. (0D4DAA44)
-[00:50:08.266372] (system)	SF Integration: Script terminated. (0D4DABCC)
-[00:50:08.267372] (system)	Loading script 'E:\Programas\GTA San Andreas SampFuncs V2\moonloader\Assistant3000.lua'...
-[00:50:08.267372] (debug)	New script: 0D4D965C
-[00:50:08.276373] (system)	Asistente Samp: Loaded successfully.
-[00:50:08.276373] (system)	Loading script 'E:\Programas\GTA San Andreas SampFuncs V2\moonloader\autominero_fz.luac'...
-[00:50:08.276373] (debug)	New script: 0D4DA29C
-[00:50:08.284375] (system)	autominero_fz.luac: Loaded successfully.
-[00:50:08.284375] (system)	Loading script 'E:\Programas\GTA San Andreas SampFuncs V2\moonloader\AutoReboot.lua'...
-[00:50:08.284375] (debug)	New script: 0D4DA8BC
-[00:50:08.285376] (system)	ML-AutoReboot: Loaded successfully.
-[00:50:08.285376] (system)	Loading script 'E:\Programas\GTA San Andreas SampFuncs V2\moonloader\Chat MImGui 7.0.lua'...
-[00:50:08.285376] (debug)	New script: 0D4D94D4
-[00:50:08.291377] (system)	Chat MImGui: Loaded successfully.
-[00:50:08.291377] (system)	Loading script 'E:\Programas\GTA San Andreas SampFuncs V2\moonloader\Hora_y_Fecha.luac'...
-[00:50:08.291377] (debug)	New script: 0D4D996C
-[00:50:08.304380] (system)	Hora_y_Fecha.luac: Loaded successfully.
-[00:50:08.304380] (system)	Loading script 'E:\Programas\GTA San Andreas SampFuncs V2\moonloader\Hud_Editor_by_Jose.luac'...
-[00:50:08.304380] (debug)	New script: 0D4DABCC
-[00:50:08.370347] (system)	Hud_Editor_by_Jose.luac: Loaded successfully.
-[00:50:08.370347] (system)	Loading script 'E:\Programas\GTA San Andreas SampFuncs V2\moonloader\keyboard.lua'...
-[00:50:08.370347] (debug)	New script: 0D4DA734
-[00:50:08.374347] (system)	KeyBoard: Loaded successfully.
-[00:50:08.374347] (system)	Loading script 'E:\Programas\GTA San Andreas SampFuncs V2\moonloader\keyboard[3.0].lua'...
-[00:50:08.374347] (debug)	New script: 0D4DAD54
-[00:50:08.375348] (error)	keyboard[3.0].lua: ...TA San Andreas SampFuncs V2\moonloader\keyboard[3.0].lua:141: 'end' expected (to close 'function' at line 139) near 'while'
-[00:50:08.375348] (error)	keyboard[3.0].lua: Script died due to an error. (0D4DAD54)
-[00:50:08.375348] (system)	Loading script 'E:\Programas\GTA San Andreas SampFuncs V2\moonloader\reload_all.lua'...
-[00:50:08.375348] (debug)	New script: 0D4DA114
-[00:50:08.375348] (system)	ML-ReloadAll: Loaded successfully.
-[00:50:08.375348] (system)	Loading script 'E:\Programas\GTA San Andreas SampFuncs V2\moonloader\ScrollCameraControl.lua'...
-[00:50:08.375348] (debug)	New script: 0D4D91C4
-[00:50:08.377348] (system)	Scroll Camera Control: Loaded successfully.
-[00:50:08.377348] (system)	Loading script 'E:\Programas\GTA San Andreas SampFuncs V2\moonloader\SF Integration.lua'...
-[00:50:08.377348] (debug)	New script: 0D4DAD54
-[00:50:08.378348] (system)	SF Integration: Loaded successfully.
-[00:50:08.381349] (script)	Chat MImGui: [WARNING] rewrote another hook
-[01:29:39.978815] (script)	ML-AutoReboot: Reloading "Asistente Samp"...
-[01:29:39.990817] (system)	Asistente Samp: Script terminated. (0D4D965C)
-[01:29:39.992817] (system)	Loading script 'E:\Programas\GTA San Andreas SampFuncs V2\moonloader\Assistant3000.lua'...
-[01:29:39.992817] (debug)	New script: 0D4DAA44
-[01:29:39.993817] (error)	Assistant3000.lua: ...TA San Andreas SampFuncs V2\moonloader\Assistant3000.lua:726: '=' expected near 'for'
-[01:29:39.993817] (error)	Assistant3000.lua: Script died due to an error. (0D4DAA44)
-[01:29:45.028972] (script)	ML-AutoReboot: Loading "E:\Programas\GTA San Andreas SampFuncs V2\moonloader\Assistant3000.lua"...
-[01:29:45.028972] (system)	Loading script 'E:\Programas\GTA San Andreas SampFuncs V2\moonloader\Assistant3000.lua'...
-[01:29:45.028972] (debug)	New script: 0D4D9AF4
-[01:29:45.037974] (system)	Asistente Samp: Loaded successfully.
-ipt 'E:\Programas\GTA San Andreas SampFuncs V2\moonloader\Chat MImGui 7.0.lua'...
-[00:39:39.765982] (debug)	New script: 0D4A73E4
-[00:39:39.803991] (system)	Chat MImGui: Loaded successfully.
-[00:39:39.803991] (system)	Loading script 'E:\Programas\GTA San Andreas SampFuncs V2\moonloader\Hora_y_Fecha.luac'...
-[00:39:39.803991] (debug)	New script: 0D4A756C
-[00:39:39.853002] (system)	Hora_y_Fecha.luac: Loaded successfully.
-[00:39:39.854003] (system)	Loading script 'E:\Programas\GTA San Andreas SampFuncs V2\moonloader\Hud_Editor_by_Jose.luac'...
-[00:39:39.854003] (debug)	New script: 0D4A6F4C
-[00:39:39.960026] (system)	Hud_Editor_by_Jose.luac: Loaded successfully.
-[00:39:39.961026] (system)	Loading script 'E:\Programas\GTA San Andreas SampFuncs V2\moonloader\keyboard.lua'...
-[00:39:39.961026] (debug)	New script: 0D4A67A4
-[00:39:39.970028] (system)	KeyBoard: Loaded successfully.
-[00:39:39.970028] (system)	Loading script 'E:\Programas\GTA San Andreas SampFuncs V2\moonloader\keyboard[3.0].lua'...
-[00:39:39.970028] (debug)	New script: 0D4A5FFC
-[00:39:39.987032] (error)	keyboard[3.0].lua: ...TA San Andreas SampFuncs V2\moonloader\keyboard[3.0].lua:141: 'end' expected (to close 'function' at line 139) near 'while'
-[00:39:39.987032] (error)	keyboard[3.0].lua: Script died due to an error. (0D4A5FFC)
-[00:39:39.988033] (system)	Loading script 'E:\Programas\GTA San Andreas SampFuncs V2\moonloader\reload_all.lua'...
-[00:39:39.988033] (debug)	New script: 0D4A76F4
-[00:39:39.988033] (system)	ML-ReloadAll: Loaded successfully.
-[00:39:39.988033] (system)	Loading script 'E:\Programas\GTA San Andreas SampFuncs V2\moonloader\ScrollCameraControl.lua'...
-[00:39:39.988033] (debug)	New script: 0D4A5FFC
-[00:39:40.007036] (system)	Scroll Camera Control: Loaded successfully.
-[00:39:40.007036] (system)	Loading script 'E:\Programas\GTA San Andreas SampFuncs V2\moonloader\SF Integration.lua'...
-[00:39:40.007036] (debug)	New script: 0D4A6184
-[00:39:40.016039] (system)	SF Integration: Loaded successfully.
-[00:39:40.019039] (script)	Chat MImGui: [WARNING] rewrote another hook
-[00:41:29.164831] (script)	Asistente Samp: Tabla guardada en datos.json
-[01:21:00.510256] (script)	Asistente Samp: 
-[01:29:40.253876] (script)	ML-AutoReboot: Reloading "Asistente Samp"...
-[01:29:40.272880] (system)	Asistente Samp: Script terminated. (0D4A7A04)
-[01:29:40.275880] (system)	Loading script 'E:\Programas\GTA San Andreas SampFuncs V2\moonloader\Assistant3000.lua'...
-[01:29:40.275880] (debug)	New script: 01AA7724
-[01:29:40.276881] (error)	Assistant3000.lua: ...TA San Andreas SampFuncs V2\moonloader\Assistant3000.lua:726: '=' expected near 'for'
-[01:29:40.276881] (error)	Assistant3000.lua: Script died due to an error. (01AA7724)
-[01:29:44.863935] (script)	ML-AutoReboot: Loading "E:\Programas\GTA San Andreas SampFuncs V2\moonloader\Assistant3000.lua"...
-[01:29:44.863935] (system)	Loading script 'E:\Programas\GTA San Andreas SampFuncs V2\moonloader\Assistant3000.lua'...
-[01:29:44.863935] (debug)	New script: 01AA7724
-[01:29:44.872937] (system)	Asistente Samp: Loaded successfully.
+[21:48:37.120764] (info)	Working directory: E:\Programas\GTA San Andreas SampFuncs V2\moonloader
+[21:48:37.120764] (debug)	FP Control: 0009001F
+[21:48:37.120764] (debug)	Game: GTA SA 1.0.0.0 US
+[21:48:37.120764] (system)	Installing pre-game hooks...
+[21:48:37.123765] (system)	Hooks installed.
+[21:48:41.417358] (debug)	Initializing opcode handler table
+[21:48:41.417358] (debug)	package.path = E:\Programas\GTA San Andreas SampFuncs V2\moonloader\lib\?.lua;E:\Programas\GTA San Andreas SampFuncs V2\moonloader\lib\?\init.lua;E:\Programas\GTA San Andreas SampFuncs V2\moonloader\?.lua;E:\Programas\GTA San Andreas SampFuncs V2\moonloader\?\init.lua;.\?.lua;E:\Programas\GTA San Andreas SampFuncs V2\moonloader\lib\?.luac;E:\Programas\GTA San Andreas SampFuncs V2\moonloader\lib\?\init.luac;E:\Programas\GTA San Andreas SampFuncs V2\moonloader\?.luac;E:\Programas\GTA San Andreas SampFuncs V2\moonloader\?\init.luac;.\?.luac
+[21:48:41.417358] (debug)	package.cpath = E:\Programas\GTA San Andreas SampFuncs V2\moonloader\lib\?.dll;
+[21:48:41.432362] (system)	Loading script 'E:\Programas\GTA San Andreas SampFuncs V2\moonloader\Assistant3000.lua'...
+[21:48:41.463369] (debug)	New script: 01AD3E4C
+[21:48:42.369194] (system)	Asistente Samp: Loaded successfully.
+[21:48:42.369194] (system)	Loading script 'E:\Programas\GTA San Andreas SampFuncs V2\moonloader\autominero_fz.luac'...
+[21:48:42.369194] (debug)	New script: 0D49DA34
+[21:48:42.712118] (system)	autominero_fz.luac: Loaded successfully.
+[21:48:42.712118] (system)	Loading script 'E:\Programas\GTA San Andreas SampFuncs V2\moonloader\AutoReboot.lua'...
+[21:48:42.712118] (debug)	New script: 0D49DBBC
+[21:48:42.731974] (system)	ML-AutoReboot: Loaded successfully.
+[21:48:42.731974] (system)	Loading script 'E:\Programas\GTA San Andreas SampFuncs V2\moonloader\Chat MImGui 7.0.lua'...
+[21:48:42.731974] (debug)	New script: 0D49DF4C
+[21:48:42.767982] (system)	Chat MImGui: Loaded successfully.
+[21:48:42.767982] (system)	Loading script 'E:\Programas\GTA San Andreas SampFuncs V2\moonloader\Hora_y_Fecha.luac'...
+[21:48:42.767982] (debug)	New script: 0D49E0D4
+[21:48:43.007544] (system)	Hora_y_Fecha.luac: Loaded successfully.
+[21:48:43.007544] (system)	Loading script 'E:\Programas\GTA San Andreas SampFuncs V2\moonloader\Hud_Editor_by_Jose.luac'...
+[21:48:43.007544] (debug)	New script: 0D4B6BAC
+[21:48:43.279898] (system)	Hud_Editor_by_Jose.luac: Loaded successfully.
+[21:48:43.280898] (system)	Loading script 'E:\Programas\GTA San Andreas SampFuncs V2\moonloader\keyboard.lua'...
+[21:48:43.280898] (debug)	New script: 0D4B6A24
+[21:48:43.345965] (system)	KeyBoard: Loaded successfully.
+[21:48:43.345965] (system)	Loading script 'E:\Programas\GTA San Andreas SampFuncs V2\moonloader\keyboard[3.0].lua'...
+[21:48:43.345965] (debug)	New script: 0D4B6D34
+[21:48:43.395976] (error)	keyboard[3.0].lua: ...TA San Andreas SampFuncs V2\moonloader\keyboard[3.0].lua:141: 'end' expected (to close 'function' at line 139) near 'while'
+[21:48:43.395976] (error)	keyboard[3.0].lua: Script died due to an error. (0D4B6D34)
+[21:48:43.395976] (system)	Loading script 'E:\Programas\GTA San Andreas SampFuncs V2\moonloader\reload_all.lua'...
+[21:48:43.395976] (debug)	New script: 0D4B6D34
+[21:48:43.407978] (system)	ML-ReloadAll: Loaded successfully.
+[21:48:43.407978] (system)	Loading script 'E:\Programas\GTA San Andreas SampFuncs V2\moonloader\ScrollCameraControl.lua'...
+[21:48:43.408979] (debug)	New script: 0D4B658C
+[21:48:43.479994] (system)	Scroll Camera Control: Loaded successfully.
+[21:48:43.479994] (system)	Loading script 'E:\Programas\GTA San Andreas SampFuncs V2\moonloader\SF Integration.lua'...
+[21:48:43.479994] (debug)	New script: 0D4B6714
+[21:48:43.504001] (system)	SF Integration: Loaded successfully.
+[21:48:43.504001] (system)	Loading script 'E:\Programas\GTA San Andreas SampFuncs V2\moonloader\tpm.luac'...
+[21:48:43.504001] (debug)	New script: 0D4B689C
+[21:48:43.620202] (system)	tpm.luac: Loaded successfully.
+[21:49:00.360151] (system)	Installing post-load hooks...
+[21:49:00.372154] (system)	Hooks installed.
+[21:49:02.069261] (script)	Chat MImGui: [WARNING] rewrote another hook
+[21:52:10.222448] (system)	Unloading...
+[21:52:10.222448] (system)	Asistente Samp: Script terminated. (01AD3E4C)
+[21:52:10.241451] (system)	autominero_fz.luac: Script terminated. (0D49DA34)
+[21:52:10.242452] (system)	ML-AutoReboot: Script terminated. (0D49DBBC)
+[21:52:10.243452] (system)	Chat MImGui: Script terminated. (0D49DF4C)
+[21:52:10.246452] (system)	Hora_y_Fecha.luac: Script terminated. (0D49E0D4)
+[21:52:10.257455] (system)	Hud_Editor_by_Jose.luac: Script terminated. (0D4B6BAC)
+[21:52:10.258455] (system)	KeyBoard: Script terminated. (0D4B6A24)
+[21:52:10.260456] (system)	ML-ReloadAll: Script terminated. (0D4B6D34)
+[21:52:10.260456] (system)	Scroll Camera Control: Script terminated. (0D4B658C)
+[21:52:10.261457] (system)	SF Integration: Script terminated. (0D4B6714)
+[21:52:10.261457] (system)	tpm.luac: Script terminated. (0D4B689C)
+[21:52:11.360470] (system)	Session terminated.

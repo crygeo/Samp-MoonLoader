@@ -30,21 +30,42 @@ autoreloadDelay    = 500 -- ms
 function main()
   -- for the reload case
   onSystemInitialized()
+
+  --Aqui agregas archivos extra para el autoreload
+  local listAEx = {
+    "src/imple/helpMet.lua", 
+    "src/imple/keysC.lua", 
+    "src/imple/mimgui.lua", 
+    "src/view/vConfig.lua",
+    "src/view/vInventory.lua",
+    "src/view/vActionCrud.lua",
+    "src/view/vMacroCrud.lua",
+    "src/view/vSubCommandCrud.lua",
+    "src/view/vAllviews.lua",
+  }
+  add_extra_archives("Assistant3000", listAEx)
+
   while true do
     wait(autoreloadDelay)
     if files ~= nil then
-      for fpath, saved_time in pairs(files) do
-        local file_time = get_file_modify_time(fpath)
-        if file_time ~= nil and (file_time[1] ~= saved_time[1] or file_time[2] ~= saved_time[2]) then
-          local scr = find_script_by_path(fpath)
-          if scr ~= nil then
-            print('Reloading "' .. scr.name .. '"...')
-            scr:reload()
-          else
-            print('Loading "' .. fpath .. '"...')
-            script.load(fpath)
+      for fpath, saved_times in pairs(files) do
+
+        for index, saved_time in ipairs(saved_times) do
+
+          local file_time = get_file_modify_time(saved_time[3])
+          if file_time ~= nil and (file_time[1] ~= saved_time[1] or file_time[2] ~= saved_time[2]) then
+            local scr = find_script_by_path(fpath)
+            if scr ~= nil then
+              print('Reloading "' .. scr.name .. '"...')
+              scr:reload()
+            else
+              if find_script_by_path(fpath) ~= nil then
+                print('Loading "' .. fpath .. '"...')
+                script.load(fpath)
+              end
+            end
+            files[fpath][index] = file_time -- update time
           end
-          files[fpath] = file_time -- update time
         end
       end
     end
@@ -57,14 +78,46 @@ function onSystemInitialized()
   end
 end
 
+function add_extra_archives(nameScript, pathArchivos)
+  local pathArchivoMain =  (getWorkingDirectory() .. "/" .. nameScript .. ".lua"):gsub("/", "\\")
+  local pathGen = getWorkingDirectory() .. "/"
+
+  local list = files[pathArchivoMain]
+  
+  for _, path in pairs(pathArchivos) do
+    local time = get_file_modify_time(pathGen .. path)
+    if time ~= nil then
+      table.insert(list, time)
+    end
+  end
+  
+  files[pathArchivoMain] = list
+end
+
+function PrintTableValues(tbl, prefix)
+  prefix = prefix or ""
+  for k, v in pairs(tbl) do
+      local keyStr = tostring(k)
+      if type(v) == "table" then
+          print(prefix .. "[" .. keyStr .. "] (table):")
+          PrintTableValues(v, prefix .. "-----")
+      else
+          print(prefix .. "[" .. keyStr .. "] = " .. tostring(v))
+      end
+  end
+end
+
 function init()
   initialized = true
   files = {}
   -- store all loaded scripts
-  for _, s in ipairs(script.list()) do
+  
+  local tabla = script.list()
+  
+  for _, s in ipairs(tabla) do
     local time = get_file_modify_time(s.path)
     if time ~= nil then
-      files[s.path] = time
+      files[s.path] = {time}
     end
   end
 end
@@ -91,7 +144,7 @@ function get_file_modify_time(path)
 		local result = ffi.C.GetFileTime(handle, filetime, filetime + 1, filetime + 2)
 		ffi.C.CloseHandle(handle)
 		if result ~= 0 then
-			return {tonumber(filetime[2].dwLowDateTime), tonumber(filetime[2].dwHighDateTime)}
+			return {tonumber(filetime[2].dwLowDateTime), tonumber(filetime[2].dwHighDateTime), path}
 		end
 	end
 	return nil
